@@ -1,0 +1,4 @@
+.container
+  h1
+    | Create a new work
+  ng-include src='"/modules/works-form/form.html"'

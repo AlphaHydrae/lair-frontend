@@ -1,0 +1,6 @@
+.container
+  h1
+    | Edit
+    span ng-show='work'  {{ work.titles[0].text }}
+  div ng-if='work'
+    ng-include src='"/modules/works-form/form.html"'

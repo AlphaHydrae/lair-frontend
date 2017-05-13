@@ -1,0 +1,116 @@
+doctype html
+html ng-app='lair' ng-strict-di=true
+
+  head
+    title Lair
+    base href='/'
+    meta name='viewport' content='width=device-width, initial-scale=1'
+
+    /! build:css /assets/app.css
+    link rel='stylesheet' type='text/css' href='/vendor/stylesheets/normalize.css'
+    link rel='stylesheet' type='text/css' href='/vendor/stylesheets/jquery-ui.css'
+    link rel='stylesheet' type='text/css' href='/vendor/stylesheets/bootstrap.css'
+    link rel='stylesheet' type='text/css' href='/vendor/stylesheets/bootstrap-theme.css'
+    link rel='stylesheet' type='text/css' href='/vendor/stylesheets/bootstrap-social.css'
+    link rel='stylesheet' type='text/css' href='/vendor/stylesheets/font-awesome.css'
+    link rel='stylesheet' type='text/css' href='/vendor/stylesheets/angular-ui-select.css'
+    /! inject:css
+    /! endinject
+    /! endbuild
+
+  body
+
+    nav.navbar.navbar-default role='navigation'
+      .container
+        .navbar-header
+          button.navbar-toggle.collapsed type='button' data-toggle='collapse' data-target='#menu'
+            span.sr-only Toggle navigation
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+          a.navbar-brand ui-sref='home' Lair
+        #menu.collapse.navbar-collapse
+          ul.nav.navbar-nav
+            li
+              a href='#' ui-sref='collections.list' Collections
+            li ng-if='currentUser'
+              a href='#' ui-sref='works.list' Works
+            li ng-if='currentUser' uib-dropdown=true
+              a href='#' uib-dropdown-toggle=true role='button' aria-expanded='false'
+                | Admin
+                span.caret
+              ul.dropdown-menu uib-dropdown-menu=true role='menu'
+                li.dropdown-header Add media
+                li
+                  a href='#' ui-sref='works.new' Create work
+                li
+                  a href='#' ui-sref='items.new' Create item
+                li.dropdown-header Manage media
+                li
+                  a href='#' ui-sref='ownerships.list' Ownerships
+                li
+                  a href='#' ui-sref='mediaIdent' Identify media
+                li
+                  a href='#' ui-sref='mediaCompare' Compare media
+                li
+                  a href='#' ui-sref='images.missing' Set missing images
+                li
+                  a href='#' ui-sref='events.list' Events
+                li.dropdown-header Manage files
+                li
+                  a href='#' ui-sref='files.explorer' Files
+                li
+                  a href='#' ui-sref='mediaScans.list' Media scanning
+                li
+                  a href='#' ui-sref='mediaUrls.list' Media scraping
+                li.dropdown-header Platform admin
+                li ng-if='currentUserIs("admin")'
+                  a href='#' ui-sref='status' Status
+                li ng-if='currentUserIs("admin")'
+                  a href='#' ui-sref='users.list' Users
+          ul#auth.nav.navbar-nav.navbar-right ng-controller='AuthCtrl'
+            li ng-if='!isAuthenticated()'
+              a href='#' ng-click='showLoginDialog()' Sign in
+            li ng-if='isAuthenticated()' uib-dropdown=true
+              a href='#' uib-dropdown-toggle=true role='button' aria-expanded='false' uib-tooltip='Profile and more' tooltip-append-to-body='true' tooltip-placement='left'
+                img.avatar gravatar-src='currentUser.emailMd5' gravatar-size=24
+                span.caret
+              ul.dropdown-menu uib-dropdown-menu=true role='menu'
+                li
+                  a href='#' ui-sref='profile' Profile
+                li
+                  a href='#' ng-click='signOut()' Sign out
+
+    .content ui-view=true
+
+    /! build:js /assets/app.js
+    script src='/vendor/javascripts/lodash.js'
+    script src='/vendor/javascripts/jquery.js'
+    script src='/vendor/javascripts/jquery-ui.js'
+    script src='/vendor/javascripts/moment.js'
+    script src='/vendor/javascripts/pretty-bytes.js'
+    script src='/vendor/javascripts/inflection.js'
+    script src='/vendor/javascripts/angular.js'
+    script src='/vendor/javascripts/angular-sanitize.js'
+    script src='/vendor/javascripts/angular-ui-router.js'
+    script src='/vendor/javascripts/angular-ui-bootstrap-tpls.js'
+    script src='/vendor/javascripts/angular-base64.js'
+    script src='/vendor/javascripts/angular-storage.js'
+    script src='/vendor/javascripts/angular-ng-infinite-scroll.js'
+    script src='/vendor/javascripts/angular-gravatar.js'
+    script src='/vendor/javascripts/angular-ui-date.js'
+    script src='/vendor/javascripts/angular-ui-sortable.js'
+    script src='/vendor/javascripts/angular-ui-select.js'
+    script src='/vendor/javascripts/angular-moment.js'
+    script src='/vendor/javascripts/angular-smart-table.js'
+    script src='/vendor/javascripts/angular-pretty-bytes.js'
+    script src='/vendor/javascripts/angular-ng-inflection.js'
+    script src='/vendor/javascripts/satellizer.js'
+    script src='/vendor/javascripts/isbn.js'
+    script src='/vendor/javascripts/isbn-groups.js'
+    script src='/vendor/javascripts/bootstrap.js'
+    /! inject:js
+    /! endinject
+    /! endbuild
+    - if this.liveReloadUrl
+      script src=this.liveReloadUrl
