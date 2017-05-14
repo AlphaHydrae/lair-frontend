@@ -1,4 +1,4 @@
-angular.module('lair.auth', [ 'base64', 'lair.storage', 'satellizer', 'ui.gravatar' ])
+angular.module('lair.auth', [ 'lair.storage', 'satellizer', 'ui.gravatar' ])
 
   .config(function($httpProvider) {
     $httpProvider.interceptors.push('authInterceptor');

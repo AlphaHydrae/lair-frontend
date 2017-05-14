@@ -7,6 +7,7 @@ const buildDir = config.path('build');
 const app = express();
 
 app.use(express.static(buildDir));
+app.use('/node_modules', express.static(config.path('node_modules')));
 app.use('/vendor', express.static(config.path('vendor')));
 
 function proxy(path) {
