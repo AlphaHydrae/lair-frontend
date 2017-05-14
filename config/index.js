@@ -44,6 +44,10 @@ function buildPath(...parts) {
 }
 
 function getLiveReloadUrl() {
+  if (env == 'production') {
+    return;
+  }
+
   const port = parseConfigInt(get('LIVE_RELOAD_PORT')) || 35729;
   return `http://localhost:${port}/livereload.js`;
 }

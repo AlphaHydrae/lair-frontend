@@ -1,24 +1,34 @@
 const _ = require('lodash');
+const autoprefixer = require('gulp-autoprefixer');
 const chain = require('gulp-chain');
 const clean = require('gulp-clean');
 const concat = require('gulp-concat');
 const config = require('./config');
+const cssmin = require('gulp-cssmin');
+const filter = require('gulp-filter');
 const fs = require('fs');
 const gulp = require('gulp');
 const gulpIf = require('gulp-if');
 const handlebars = require('gulp-compile-handlebars');
 const handlebarsCompiler = require('handlebars');
 const inject = require('gulp-inject');
+const less = require('gulp-less');
 const livereload = require('gulp-livereload');
-const minimatch = require('minimatch');
 const ngAnnotate = require('gulp-ng-annotate');
 const nodemon = require('gulp-nodemon');
+const path = require('path');
 const prettify = require('gulp-html-prettify');
+const prettyBytes = require('pretty-bytes');
+const rev = require('gulp-rev');
+const revDeleteOriginal = require('gulp-rev-delete-original');
+const revReplace = require('gulp-rev-replace');
 const runSequence = require('run-sequence');
 const slm = require('gulp-slm');
 const streamQueue = require('streamqueue');
 const stylus = require('gulp-stylus');
 const through = require('through2');
+const uglify = require('gulp-uglify');
+const useref = require('gulp-useref');
 const util = require('gulp-util');
 const watch = require('gulp-watch');
 
@@ -30,16 +40,40 @@ let templateWrapper;
 
 const src = {
   index: 'index.slm',
+  fonts: [ 'node_modules/bootstrap/dist/fonts/*.*', 'node_modules/font-awesome/fonts/*.*' ],
+  images: 'vendor/stylesheets/images/*.*',
   js: '**/*.js',
+  less: '**/*.less',
   static: [ 'favicon.ico', 'robots.txt' ],
   styl: '**/*.styl',
   templates: [ '**/*.slm', '!index.slm' ]
 };
 
+const filters = {
+  none: () => filter([ 'none' ]),
+  noCssLib: () => filter([ '**/*', '!bootstrap.css', '!font-awesome.css' ], { restore: true }),
+  noRev: () => filter([ '**/*', '!index.html', '!favicon.ico', '!robots.txt' ], { restore: true })
+};
+
 gulp.task('build:clean', function() {
-  return gulp.src(buildDir)
-    .pipe(clean({ read: false }));
-})
+  return gulp.src(buildDir, { read: false })
+    .pipe(clean());
+});
+
+gulp.task('build:fonts', function() {
+  return gulp.src(src.fonts)
+    .pipe(gulp.dest(path.join(buildDir, 'fonts')));
+});
+
+gulp.task('build:images', function() {
+  return gulp.src(src.images)
+    .pipe(gulp.dest(path.join(buildDir, 'images')));
+});
+
+gulp.task('build:less', function() {
+  return buildSrc(src.less)
+    .pipe(compileLess());
+});
 
 gulp.task('build:styl', function() {
   return buildSrc(src.styl)
@@ -48,21 +82,17 @@ gulp.task('build:styl', function() {
 
 gulp.task('build:js', function() {
 
-  const codeStream = buildSrc(src.js);
+  let stream = buildSrc(src.js);
 
-  let stream;
   if (config.env == 'production') {
     const templatesStream = buildSrc(src.templates)
       .pipe(slm(getSlmOptions()))
       .pipe(wrapTemplate());
 
-    stream = streamQueue({ objectMode: true  }, codeStream, templatesStream);
-  } else {
-    stream = codeStream;
+    stream = streamQueue({ objectMode: true }, stream, templatesStream);
   }
 
-  return stream
-    .pipe(compileJavaScript());
+  return stream.pipe(compileJavaScript());
 });
 
 gulp.task('build:index', function() {
@@ -70,17 +100,63 @@ gulp.task('build:index', function() {
     .pipe(compileIndex());
 });
 
-gulp.task('build:static', function() {
-  return buildSrc(src.static)
+gulp.task('build:prod:rev', function() {
+  if (config.env != 'production') {
+    return;
+  }
+
+  const noCssLib = filters.noCssLib();
+  const noRevFilter = filters.noRev();
+
+  return gulp.src('**/*', { cwd: buildDir })
+    .pipe(noCssLib)
+    .pipe(noRevFilter)
+    .pipe(rev())
+    .pipe(revDeleteOriginal())
+    .pipe(gulp.dest(buildDir))
+    .pipe(noRevFilter.restore)
+    .pipe(revReplace())
+    .pipe(tap(file => util.log(`${util.colors.yellow(file.relative)} ${util.colors.magenta(prettyBytes(file.contents.length))}`)))
+    .pipe(gulp.dest(buildDir))
+    .pipe(filters.none())
+    .pipe(noCssLib.restore)
+    .pipe(clean());
+});
+
+gulp.task('build:prod:useref', function() {
+  if (config.env != 'production') {
+    return;
+  }
+
+  return gulp.src('index.html', { cwd: buildDir })
+    .pipe(useref({
+      base: config.root,
+      searchPath: [ '.', 'build' ]
+    }))
+    .pipe(gulpIf('**/*.js', uglify()))
+    .pipe(gulpIf('**/*.css', cssmin({
+      keepSpecialComments: 0
+    })))
     .pipe(gulp.dest(buildDir));
 });
 
+gulp.task('build:prod', sequence('build:prod:useref', 'build:prod:rev'));
+
+gulp.task('build:static', function() {
+  return buildSrc(src.static)
+    .pipe(toBuildDir());
+});
+
 gulp.task('build:templates', function() {
+  if (config.env == 'production') {
+    return;
+  }
+
   return buildSrc(src.templates)
     .pipe(compileTemplate());
 });
 
-gulp.task('build', sequence('build:clean', [ 'build:js', 'build:static', 'build:styl', 'build:templates' ], 'build:index'));
+gulp.task('build', sequence('build:clean', [ 'build:fonts', 'build:images', 'build:js', 'build:less', 'build:static', 'build:styl', 'build:templates' ], 'build:index', 'build:prod'));
 
 gulp.task('dev', sequence('build', [ 'server', 'watch' ]));
 
@@ -147,11 +223,16 @@ gulp.task('default', [ 'dev' ]);
 
 function compileIndex() {
   return chain(function(stream) {
+
+    const injections = gulp
+      .src([ '**/*.css', '**/*.js' ], { cwd: buildDir, read: false })
+      .pipe(filters.noCssLib());
+
     return stream
       .pipe(slm(getSlmOptions()))
       .pipe(prettify())
-      .pipe(inject(gulp.src([ '**/*.css', '**/*.js' ], { cwd: buildDir, read: false })))
-      .pipe(gulp.dest(buildDir));
+      .pipe(inject(injections))
+      .pipe(toBuildDir());
   })();
 }
 
@@ -162,7 +243,7 @@ function compileJavaScript() {
     const options = {};
 
     stream = stream
-      .pipe(gulpIf(file => minimatch(file.relative, 'app.js'), handlebars(locals, options)))
+      .pipe(gulpIf('app.js', handlebars(locals, options)))
       .pipe(ngAnnotate())
 
     if (config.env == 'production') {
@@ -170,16 +251,32 @@ function compileJavaScript() {
         .pipe(concat('app.js'));
     }
 
+    return stream.pipe(toBuildDir());
+  })();
+}
+
+function compileLess() {
+  return chain(function(stream) {
     return stream
-      .pipe(gulp.dest(buildDir));
+      .pipe(less({
+        paths: [ 'build', 'node_modules' ]
+      }))
+      .pipe(toBuildDir());
   })();
 }
 
 function compileStylus() {
   return chain(function(stream) {
+    stream = stream.pipe(stylus())
+
+    if (config.env == 'production') {
+      stream = stream
+        .pipe(concat('app.css'));
+    }
+
     return stream
-      .pipe(stylus())
-      .pipe(gulp.dest(buildDir));
+      .pipe(autoprefixer())
+      .pipe(toBuildDir());
   })();
 }
 
@@ -188,8 +285,23 @@ function compileTemplate() {
     return stream
       .pipe(slm(getSlmOptions()))
       .pipe(prettify())
+      .pipe(toBuildDir());
+  })();
+}
+
+function toBuildDir() {
+  return chain(function(stream) {
+    return stream
+      .pipe(gulpIf(config.env != 'production', tap(file => util.log(util.colors.yellow(file.relative)))))
       .pipe(gulp.dest(buildDir));
   })();
+}
+
+function tap(func) {
+  return through.obj(function(file, enc, callback) {
+    func(file);
+    callback(undefined, file);
+  });
 }
 
 function wrapTemplate() {
