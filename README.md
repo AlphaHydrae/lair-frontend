@@ -1,5 +1,7 @@
 # Lair Frontend
 
-[Frontend][lair] for the Lair media center.
+The Lair media center frontend.
 
-[lair]: https://github.com/AlphaHydrae/lair
+* [Backend][backend]
+
+[backend]: https://github.com/AlphaHydrae/lair-backend

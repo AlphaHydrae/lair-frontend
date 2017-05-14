@@ -3,7 +3,8 @@ const dotenv = require('dotenv');
 const path = require('path');
 const pkg = require('../package');
 
-const env = process.env.NODE_ENV || 'development';
+const envs = [ 'development', 'production' ];
+const env = process.env.ENV || process.env.NODE_ENV || 'development';
 const root = path.normalize(path.join(__dirname, '..'));
 
 const fixed = {
@@ -27,7 +28,15 @@ const defaultConfig = {
   port: 4000
 };
 
-module.exports = _.defaults({}, fixed, envConfig, defaultConfig);
+const config = _.defaults({}, fixed, envConfig, defaultConfig);
+
+if (!_.includes(envs, config.env)) {
+  throw new Error(`Unsupported environment ${config.env} (allowed: ${envs.join(', ')})`);
+} else if (!config.googleClientId) {
+  throw new Error('$GOOGLE_CLIENT_ID must be set');
+}
+
+module.exports = config;
 
 function buildPath(...parts) {
   parts.unshift(root);
