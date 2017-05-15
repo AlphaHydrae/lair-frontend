@@ -1,4 +1,4 @@
-angular.module('lair.works.form').controller('WorkRelationshipCtrl', function(api, $log, $uibModal, $scope, works) {
+angular.module('lair').controller('WorkRelationshipCtrl', function(api, $log, $uibModal, $scope, works) {
 
   $scope.matchingPeople = [];
   $scope.matchingCompanies = [];

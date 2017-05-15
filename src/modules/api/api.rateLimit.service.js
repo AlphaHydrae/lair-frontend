@@ -1,4 +1,4 @@
-angular.module('lair.api').factory('apiRateLimit', function() {
+angular.module('lair').factory('apiRateLimit', function() {
 
   function RateLimit(total, remaining, reset) {
     this.total = total;

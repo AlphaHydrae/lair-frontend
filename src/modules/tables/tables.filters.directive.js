@@ -1,4 +1,4 @@
-angular.module('lair.tables').directive('tableFilters', function($log) {
+angular.module('lair').directive('tableFilters', function($log) {
   return {
   restrict: 'E',
     require: '^stTable',

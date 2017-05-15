@@ -1,4 +1,4 @@
-angular.module('lair.forms').directive('ngIndeterminate', function() {
+angular.module('lair').directive('ngIndeterminate', function() {
   return {
     restrict: 'A',
     link: function(scope, element, attributes) {

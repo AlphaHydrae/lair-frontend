@@ -1,4 +1,4 @@
-angular.module('lair.works.form').directive('uniqueCompanyName', function(api, auth, $q) {
+angular.module('lair').directive('uniqueCompanyName', function(api, auth, $q) {
   return {
     require: 'ngModel',
     link: function($scope, elm, attrs, ctrl) {

@@ -1,4 +1,4 @@
-angular.module('lair.items.form').directive('validIsbn', function() {
+angular.module('lair').directive('validIsbn', function() {
   return {
     restrict: 'A',
     require: 'ngModel',
@@ -19,7 +19,7 @@ angular.module('lair.items.form').directive('validIsbn', function() {
   };
 });
 
-angular.module('lair.items.form').directive('validIsbnFormat', function() {
+angular.module('lair').directive('validIsbnFormat', function() {
   return {
     restrict: 'A',
     require: 'ngModel',

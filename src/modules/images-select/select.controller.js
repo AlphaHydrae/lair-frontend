@@ -1,4 +1,4 @@
-angular.module('lair.images.select').controller('SelectImageCtrl', function(api, $log, $uibModalInstance, $scope, $timeout) {
+angular.module('lair').controller('SelectImageCtrl', function(api, $log, $uibModalInstance, $scope, $timeout) {
 
   $scope.manualImage = {};
   $scope.manualImageNotFound = false;

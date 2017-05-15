@@ -1,4 +1,4 @@
-angular.module('lair.collections.list').controller('NewCollectionDialogCtrl', function(api, auth, $uibModalInstance, $scope) {
+angular.module('lair').controller('NewCollectionDialogCtrl', function(api, auth, $uibModalInstance, $scope) {
 
   $scope.collection = {
     restrictions: {

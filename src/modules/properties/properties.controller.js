@@ -1,4 +1,4 @@
-angular.module('lair.properties').controller('PropertiesEditorCtrl', function($scope) {
+angular.module('lair').controller('PropertiesEditorCtrl', function($scope) {
 
   $scope.propertyType = function(property) {
     if (_.isArray(property.value)) {

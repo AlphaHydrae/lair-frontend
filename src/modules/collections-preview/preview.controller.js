@@ -1,4 +1,4 @@
-angular.module('lair.collections.preview').controller('CollectionPreviewCtrl', function(api, auth, explorer, $interval, $scope, $timeout) {
+angular.module('lair').controller('CollectionPreviewCtrl', function(api, auth, explorer, $interval, $scope, $timeout) {
 
   var newElementsInterval;
 

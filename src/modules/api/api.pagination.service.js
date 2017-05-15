@@ -1,4 +1,4 @@
-angular.module('lair.api').factory('apiPagination', function($log) {
+angular.module('lair').factory('apiPagination', function($log) {
 
   function parsePaginationHeader(response, header, required) {
 

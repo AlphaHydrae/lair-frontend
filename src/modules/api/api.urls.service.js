@@ -1,4 +1,4 @@
-angular.module('lair.api').factory('urls', function($window) {
+angular.module('lair').factory('urls', function($window) {
   return {
     join: function() {
 

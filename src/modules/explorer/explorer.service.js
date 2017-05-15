@@ -1,4 +1,4 @@
-angular.module('lair.explorer').factory('explorer', function(api, $location, $log, $uibModal, $rootScope) {
+angular.module('lair').factory('explorer', function(api, $location, $log, $uibModal, $rootScope) {
 
   var modal,
       scope;

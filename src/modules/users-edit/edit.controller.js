@@ -1,4 +1,4 @@
-angular.module('lair.users.edit').controller('EditUserCtrl', function(api, auth, forms, $scope, $stateParams) {
+angular.module('lair').controller('EditUserCtrl', function(api, auth, forms, $scope, $stateParams) {
 
   api({
     url: '/users/' + $stateParams.id

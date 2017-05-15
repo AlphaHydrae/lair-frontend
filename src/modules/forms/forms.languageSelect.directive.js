@@ -1,4 +1,4 @@
-angular.module('lair.forms').directive('languageSelect', function() {
+angular.module('lair').directive('languageSelect', function() {
   return {
     restrict: 'E',
     scope: {

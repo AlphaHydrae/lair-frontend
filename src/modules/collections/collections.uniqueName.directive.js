@@ -1,4 +1,4 @@
-angular.module('lair.collections').directive('uniqueCollectionName', function(api, auth, $q, $rootScope) {
+angular.module('lair').directive('uniqueCollectionName', function(api, auth, $q, $rootScope) {
   return {
     require: 'ngModel',
     link: function($scope, elm, attrs, ctrl) {

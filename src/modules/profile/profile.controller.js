@@ -1,4 +1,4 @@
-angular.module('lair.profile').controller('ProfileCtrl', function(api, auth, forms, $scope) {
+angular.module('lair').controller('ProfileCtrl', function(api, auth, forms, $scope) {
 
   $scope.user = _.omit($scope.currentUser, 'activeAt');
 

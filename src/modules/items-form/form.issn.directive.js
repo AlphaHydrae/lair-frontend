@@ -1,4 +1,4 @@
-angular.module('lair.items.form').directive('validIssn', function() {
+angular.module('lair').directive('validIssn', function() {
   return {
     restrict: 'A',
     require: 'ngModel',
@@ -35,7 +35,7 @@ angular.module('lair.items.form').directive('validIssn', function() {
   };
 });
 
-angular.module('lair.items.form').directive('validIssnFormat', function() {
+angular.module('lair').directive('validIssnFormat', function() {
   return {
     restrict: 'A',
     require: 'ngModel',

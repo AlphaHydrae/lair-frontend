@@ -1,4 +1,4 @@
-angular.module('lair.items').factory('items', function(languages, $q) {
+angular.module('lair').factory('items', function(languages, $q) {
 
   var service = {
     types: [ 'volume', 'issue', 'video' ],

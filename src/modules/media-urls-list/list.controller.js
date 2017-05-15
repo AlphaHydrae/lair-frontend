@@ -1,4 +1,4 @@
-angular.module('lair.mediaUrls.list').controller('MediaUrlsListCtrl', function(api, $location, mediaUrls, newMediaUrlDialog, $scope, scrapers, $stateParams, tables) {
+angular.module('lair').controller('MediaUrlsListCtrl', function(api, $location, mediaUrls, newMediaUrlDialog, $scope, scrapers, $stateParams, tables) {
 
   var errorScrapStates = [ 'scrapingFailed', 'expansionFailed' ],
       inProgressScrapStates = [ 'created', 'scraping', 'scraped', 'expanding' ];

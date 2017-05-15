@@ -1,4 +1,4 @@
-angular.module('lair.routes', [ 'ui.router' ])
+angular.module('lair')
 
   .config(function($stateProvider) {
 

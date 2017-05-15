@@ -1,4 +1,4 @@
-angular.module('lair.mediaUrls').factory('mediaUrls', function($q) {
+angular.module('lair').factory('mediaUrls', function($q) {
 
   var providers = [
     {

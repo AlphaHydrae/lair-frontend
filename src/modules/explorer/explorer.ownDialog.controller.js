@@ -1,4 +1,4 @@
-angular.module('lair.explorer').controller('OwnDialogCtrl', function($scope) {
+angular.module('lair').controller('OwnDialogCtrl', function($scope) {
 
   $scope.dateOptions = {
     dateFormat: 'yy-mm-dd'

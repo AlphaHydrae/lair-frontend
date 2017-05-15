@@ -1,4 +1,4 @@
-angular.module('lair.tables').controller('PaginationCtrl', function($scope) {
+angular.module('lair').controller('PaginationCtrl', function($scope) {
 
   $scope.directPageLinks = [];
 

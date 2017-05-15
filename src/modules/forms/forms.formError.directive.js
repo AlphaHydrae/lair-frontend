@@ -1,4 +1,4 @@
-angular.module('lair.forms').directive('formError', function() {
+angular.module('lair').directive('formError', function() {
   return {
     restrict: 'A',
     scope: {

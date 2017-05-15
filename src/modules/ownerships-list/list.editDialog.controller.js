@@ -1,4 +1,4 @@
-angular.module('lair.ownerships.list').controller('EditOwnershipCtrl', function(api, $log, $uibModalInstance, $scope) {
+angular.module('lair').controller('EditOwnershipCtrl', function(api, $log, $uibModalInstance, $scope) {
 
   $scope.dateOptions = {
     dateFormat: 'yy-mm-dd'

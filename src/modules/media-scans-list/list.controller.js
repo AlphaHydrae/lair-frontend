@@ -1,4 +1,4 @@
-angular.module('lair.mediaScans.list').controller('MediaScansListCtrl', function(mediaScans, $scope, showMediaScanDialog, tables) {
+angular.module('lair').controller('MediaScansListCtrl', function(mediaScans, $scope, showMediaScanDialog, tables) {
 
   tables.create($scope, 'mediaScansList', {
     url: '/media/scans',

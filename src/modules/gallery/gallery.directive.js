@@ -1,4 +1,4 @@
-angular.module('lair.gallery').directive('gallery', function() {
+angular.module('lair').directive('gallery', function() {
   return {
     restrict: 'E',
     controller: 'GalleryCtrl',

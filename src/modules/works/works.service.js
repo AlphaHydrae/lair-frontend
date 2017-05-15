@@ -1,4 +1,4 @@
-angular.module('lair.works').factory('works', function(api, $q) {
+angular.module('lair').factory('works', function(api, $q) {
 
   var personRelations,
       companyRelations;

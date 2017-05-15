@@ -1,4 +1,4 @@
-angular.module('lair.mediaScans.showDialog').factory('showMediaScanDialog', function($uibModal) {
+angular.module('lair').factory('showMediaScanDialog', function($uibModal) {
 
   var service = {
     open: function($scope, options) {

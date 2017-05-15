@@ -1,4 +1,4 @@
-angular.module('lair.files.explorer').controller('FileExplorerCtrl', function(api, auth, $location, $scope, scrapers, $stateParams) {
+angular.module('lair').controller('FileExplorerCtrl', function(api, auth, $location, $scope, scrapers, $stateParams) {
 
   $scope.mediaFilesList = {
     records: [],

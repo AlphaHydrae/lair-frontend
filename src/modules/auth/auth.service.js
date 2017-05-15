@@ -1,4 +1,4 @@
-angular.module('lair.auth').factory('auth', function(appStore, $auth, $log, $rootScope, tokenAuth) {
+angular.module('lair').factory('auth', function(appStore, $auth, $log, $rootScope, tokenAuth) {
 
   var service = {
 

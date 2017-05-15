@@ -1,4 +1,4 @@
-angular.module('lair.explorer').directive('ownDialog', function ($compile) {
+angular.module('lair').directive('ownDialog', function ($compile) {
   return function(scope, element, attrs) {
 
     var shown = false,

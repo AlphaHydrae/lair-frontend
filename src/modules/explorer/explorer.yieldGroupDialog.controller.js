@@ -1,4 +1,4 @@
-angular.module('lair.explorer').controller('YieldGroupDialogCtrl', function(api, auth, $log, $q, $scope) {
+angular.module('lair').controller('YieldGroupDialogCtrl', function(api, auth, $log, $q, $scope) {
 
   $scope.dateOptions = {
     dateFormat: 'yy-mm-dd',

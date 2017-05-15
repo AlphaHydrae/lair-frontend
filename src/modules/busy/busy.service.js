@@ -1,4 +1,4 @@
-angular.module('lair.busy').factory('busy', function() {
+angular.module('lair').factory('busy', function() {
 
   var service = function($scope, busy) {
     if (busy === undefined) {

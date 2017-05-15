@@ -1,4 +1,4 @@
-angular.module('lair.mediaScans').factory('mediaScans', function() {
+angular.module('lair').factory('mediaScans', function() {
 
   var service = {
     isInProgress: function(scan) {

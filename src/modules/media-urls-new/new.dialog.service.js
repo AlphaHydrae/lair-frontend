@@ -1,4 +1,4 @@
-angular.module('lair.mediaUrls.new').factory('newMediaUrlDialog', function($uibModal) {
+angular.module('lair').factory('newMediaUrlDialog', function($uibModal) {
 
   var service = {
     open: function($scope) {

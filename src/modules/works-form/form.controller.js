@@ -1,4 +1,4 @@
-angular.module('lair.works.form').controller('WorkFormCtrl', function(api, works, languages, $log, $uibModal, $q, $scope, $state, $stateParams) {
+angular.module('lair').controller('WorkFormCtrl', function(api, works, languages, $log, $uibModal, $q, $scope, $state, $stateParams) {
 
   $scope.workCategories = works.categories.slice();
 

@@ -1,4 +1,4 @@
-angular.module('lair.collections').controller('CollectionFormCtrl', function(forms, works, $scope) {
+angular.module('lair').controller('CollectionFormCtrl', function(forms, works, $scope) {
 
   $scope.categories = works.categories.slice();
 

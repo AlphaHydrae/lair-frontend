@@ -1,3 +1,3 @@
-angular.module('lair.storage').factory('appStore', function(store) {
+angular.module('lair').factory('appStore', function(store) {
   return store.getNamespacedStore('lair');
 });

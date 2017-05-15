@@ -1,4 +1,4 @@
-angular.module('lair.collections.edit').controller('EditCollectionLinksCtrl', function(api, $log, $q, $scope) {
+angular.module('lair').controller('EditCollectionLinksCtrl', function(api, $log, $q, $scope) {
 
   var selectedRecords = {
     works: {},

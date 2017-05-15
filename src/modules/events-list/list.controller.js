@@ -1,4 +1,4 @@
-angular.module('lair.events.list').controller('EventsListCtrl', function(api, $log, moment, $q, $scope) {
+angular.module('lair').controller('EventsListCtrl', function(api, $log, moment, $q, $scope) {
 
   var resourceEventTypes = [ 'create', 'update', 'delete', 'scan', 'scrap' ];
 

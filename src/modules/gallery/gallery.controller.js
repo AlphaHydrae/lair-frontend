@@ -1,4 +1,4 @@
-angular.module('lair.gallery').controller('GalleryCtrl', function(auth, explorer, works, $scope, users) {
+angular.module('lair').controller('GalleryCtrl', function(auth, explorer, works, $scope, users) {
 
   $scope.currentUser = auth;
   auth.addAuthFunctions($scope);

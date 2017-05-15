@@ -1,4 +1,4 @@
-angular.module('lair.images.missing').controller('MissingImagesCtrl', function(api, $log, $uibModal, $q, $scope) {
+angular.module('lair').controller('MissingImagesCtrl', function(api, $log, $uibModal, $q, $scope) {
 
   $scope.showAllItems = false;
   $scope.useSameImageForMainItemAndWork = true;

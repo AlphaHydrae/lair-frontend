@@ -1,4 +1,4 @@
-angular.module('lair.tables').directive('stDeleteRecord', function($log) {
+angular.module('lair').directive('stDeleteRecord', function($log) {
   return {
   restrict: 'AE',
     require: '^stTable',

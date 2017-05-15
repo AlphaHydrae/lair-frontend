@@ -1,4 +1,4 @@
-angular.module('lair.images.missing').filter('onlyItemsWithImage', function() {
+angular.module('lair').filter('onlyItemsWithImage', function() {
   return function(items, scope) {
     if (scope.showAllItems) {
       return items;

@@ -1,4 +1,4 @@
-angular.module('lair.ownerships.list').controller('OwnershipsListCtrl', function(api, auth, $log, $uibModal, $scope) {
+angular.module('lair').controller('OwnershipsListCtrl', function(api, auth, $log, $uibModal, $scope) {
 
   $scope.fetchOwnerships = function(table) {
 

@@ -1,4 +1,4 @@
-angular.module('lair.mediaIdent').controller('MediaIdentCtrl', function(api, auth, $location, mediaIdentDialog, $q, $scope, scrapers, $stateParams, tables, $timeout) {
+angular.module('lair').controller('MediaIdentCtrl', function(api, auth, $location, mediaIdentDialog, $q, $scope, scrapers, $stateParams, tables, $timeout) {
 
   $scope.mediaIdentList = {
     records: [],

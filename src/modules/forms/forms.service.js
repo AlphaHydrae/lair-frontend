@@ -1,4 +1,4 @@
-angular.module('lair.forms').factory('forms', function() {
+angular.module('lair').factory('forms', function() {
 
   var service = {
     dataEquals: function(data1, data2) {

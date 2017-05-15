@@ -1,4 +1,4 @@
-angular.module('lair.images').directive('onErr', function() {
+angular.module('lair').directive('onErr', function() {
   return {
     restrict: 'A',
     scope: {

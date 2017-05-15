@@ -1,4 +1,4 @@
-angular.module('lair.items.form').directive('dateWithPrecisionAfter', function() {
+angular.module('lair').directive('dateWithPrecisionAfter', function() {
 
   var dateRegexp = /^\d+(-[01]\d(-[0123]\d)?)?$/;
 

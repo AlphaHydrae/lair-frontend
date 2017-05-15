@@ -1,4 +1,4 @@
-angular.module('lair.properties').directive('propertiesEditor', function() {
+angular.module('lair').directive('propertiesEditor', function() {
   return {
     restrict: 'E',
     controller: 'PropertiesEditorCtrl',

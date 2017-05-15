@@ -1,4 +1,4 @@
-angular.module('lair.media.compare').controller('MediaCompareCtrl', function(api, $log, $q, $scope, titles, works) {
+angular.module('lair').controller('MediaCompareCtrl', function(api, $log, $q, $scope, titles, works) {
 
   $scope.filters = {};
   $scope.sources = {};

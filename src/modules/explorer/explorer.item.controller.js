@@ -1,4 +1,4 @@
-angular.module('lair.explorer').controller('ExplorerItemCtrl', function(api, auth, explorer, items, languages, $log, $scope, $state, titles) {
+angular.module('lair').controller('ExplorerItemCtrl', function(api, auth, explorer, items, languages, $log, $scope, $state, titles) {
 
   $scope.currentUser = auth.currentUser;
   auth.addAuthFunctions($scope);

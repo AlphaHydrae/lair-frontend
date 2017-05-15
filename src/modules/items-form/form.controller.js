@@ -1,4 +1,4 @@
-angular.module('lair.items.form').controller('ItemFormCtrl', function(api, forms, $log, $uibModal, $q, items, languages, $scope, $state, $stateParams) {
+angular.module('lair').controller('ItemFormCtrl', function(api, forms, $log, $uibModal, $q, items, languages, $scope, $state, $stateParams) {
 
   $scope.itemTypes = items.types;
 

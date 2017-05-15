@@ -1,4 +1,4 @@
-angular.module('lair.works.form').directive('workRelationship', function() {
+angular.module('lair').directive('workRelationship', function() {
   return {
     restrict: 'E',
     controller: 'WorkRelationshipCtrl',

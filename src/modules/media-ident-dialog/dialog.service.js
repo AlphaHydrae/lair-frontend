@@ -1,4 +1,4 @@
-angular.module('lair.mediaIdent.dialog').factory('mediaIdentDialog', function($uibModal) {
+angular.module('lair').factory('mediaIdentDialog', function($uibModal) {
 
   var service = {
     open: function($scope, options) {

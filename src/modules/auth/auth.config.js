@@ -1,4 +1,4 @@
-angular.module('lair.auth')
+angular.module('lair')
 
   .config(function($httpProvider) {
     $httpProvider.interceptors.push('authInterceptor');

@@ -1,4 +1,4 @@
-angular.module('lair.works.form').controller('NewPersonCtrl', function(api, $log, $uibModalInstance, $scope) {
+angular.module('lair').controller('NewPersonCtrl', function(api, $log, $uibModalInstance, $scope) {
 
   $scope.newPerson = {};
   $scope.personAlreadyExists = true;

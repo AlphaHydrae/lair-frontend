@@ -1,4 +1,4 @@
-angular.module('lair.collections.show').controller('CollectionCtrl', function(api, explorer, $q, $scope, $stateParams) {
+angular.module('lair').controller('CollectionCtrl', function(api, explorer, $q, $scope, $stateParams) {
 
   fetchCollection();
   explorer.openFromLocation($scope);

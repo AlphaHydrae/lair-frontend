@@ -1,4 +1,4 @@
-angular.module('lair.users').factory('users', function(api, $log) {
+angular.module('lair').factory('users', function(api, $log) {
 
   var fetching,
       fetched = false;

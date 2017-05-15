@@ -1,4 +1,4 @@
-angular.module('lair.scrapers.label').directive('scraperLabel', function() {
+angular.module('lair').directive('scraperLabel', function() {
   return {
     restrict: 'E',
     replace: true,

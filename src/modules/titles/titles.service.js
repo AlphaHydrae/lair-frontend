@@ -1,4 +1,4 @@
-angular.module('lair.titles').factory('titles', function() {
+angular.module('lair').factory('titles', function() {
 
   var service = {
     secondaryTitle: function(record) {

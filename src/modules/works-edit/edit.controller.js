@@ -1,4 +1,4 @@
-angular.module('lair.works.edit').controller('EditWorkCtrl', function(api, $log, $scope, $state, $stateParams) {
+angular.module('lair').controller('EditWorkCtrl', function(api, $log, $scope, $state, $stateParams) {
 
   function parseWork(work) {
     return _.extend({}, work, {

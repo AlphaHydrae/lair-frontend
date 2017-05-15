@@ -1,4 +1,4 @@
-angular.module('lair.companies').directive('companyName', function() {
+angular.module('lair').directive('companyName', function() {
   return {
     restrict: 'E',
     scope: {

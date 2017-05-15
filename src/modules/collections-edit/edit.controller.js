@@ -1,4 +1,4 @@
-angular.module('lair.collections.edit').controller('EditCollectionCtrl', function(api, $scope, $state, $stateParams, users) {
+angular.module('lair').controller('EditCollectionCtrl', function(api, $scope, $state, $stateParams, users) {
 
   $scope.save = _.partial(updateCollection, false);
   $scope.saveAndMakePublic = _.partial(updateCollection, true);

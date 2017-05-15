@@ -1,4 +1,4 @@
-angular.module('lair.forms').directive('ngCompare', function() {
+angular.module('lair').directive('ngCompare', function() {
   return {
     restrict: 'A',
     require: 'ngModel',

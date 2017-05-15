@@ -1,4 +1,4 @@
-angular.module('lair.auth').factory('authInterceptor', function($q, $rootScope) {
+angular.module('lair').factory('authInterceptor', function($q, $rootScope) {
   return {
     responseError: function(err) {
       console.log(err.status);

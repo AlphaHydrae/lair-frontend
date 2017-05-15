@@ -1,4 +1,4 @@
-angular.module('lair.users').directive('uniqueUserName', function(api, auth, $q, $rootScope) {
+angular.module('lair').directive('uniqueUserName', function(api, auth, $q, $rootScope) {
   return {
     require: 'ngModel',
     link: function($scope, elm, attrs, ctrl) {

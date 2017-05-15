@@ -1,4 +1,4 @@
-angular.module('lair.works.form').controller('NewCompanyCtrl', function(api, $log, $uibModalInstance, $scope) {
+angular.module('lair').controller('NewCompanyCtrl', function(api, $log, $uibModalInstance, $scope) {
 
   $scope.company = {};
 

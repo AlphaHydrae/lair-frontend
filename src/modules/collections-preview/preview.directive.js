@@ -1,4 +1,4 @@
-angular.module('lair.collections.preview').directive('collectionPreview', function() {
+angular.module('lair').directive('collectionPreview', function() {
   return {
     restrict: 'E',
     templateUrl: '/modules/collections-preview/preview.html',

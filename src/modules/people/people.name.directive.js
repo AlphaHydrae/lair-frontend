@@ -1,4 +1,4 @@
-angular.module('lair.people').directive('personName', function() {
+angular.module('lair').directive('personName', function() {
   return {
     restrict: 'E',
     scope: {

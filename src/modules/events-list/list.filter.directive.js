@@ -1,4 +1,4 @@
-angular.module('lair.events.list').directive('filterEvents', function() {
+angular.module('lair').directive('filterEvents', function() {
   return {
     restrict: 'E',
     require: '^stTable',

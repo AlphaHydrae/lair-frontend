@@ -1,4 +1,4 @@
-angular.module('lair.tables').factory('tables', function(api) {
+angular.module('lair').factory('tables', function(api) {
 
   var service = {
     create: function($scope, name, options) {

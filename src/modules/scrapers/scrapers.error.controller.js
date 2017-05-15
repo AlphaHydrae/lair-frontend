@@ -1,4 +1,4 @@
-angular.module('lair.scrapers').controller('ScraperErrorModalCtrl', function(api, $uibModalInstance, $scope) {
+angular.module('lair').controller('ScraperErrorModalCtrl', function(api, $uibModalInstance, $scope) {
 
   api({
     url: '/media/scraps/' + $scope.scrapId,

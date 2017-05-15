@@ -1,4 +1,4 @@
-angular.module('lair.infinite').controller('InfiniteCtrl', function(api, auth, $scope) {
+angular.module('lair').controller('InfiniteCtrl', function(api, auth, $scope) {
 
   $scope.fetchMore = fetchMore;
   $scope.showMore = showMore;

@@ -1,4 +1,4 @@
-angular.module('lair.titles').directive('titlesForm', function() {
+angular.module('lair').directive('titlesForm', function() {
   return {
     restrict: 'E',
     controller: 'TitlesFormCtrl',

@@ -1,4 +1,4 @@
-angular.module('lair.auth').controller('LoginCtrl', function(auth, $uibModalInstance, $scope) {
+angular.module('lair').controller('LoginCtrl', function(auth, $uibModalInstance, $scope) {
 
   function onError(response) {
     $scope.signingIn = false;

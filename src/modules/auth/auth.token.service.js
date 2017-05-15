@@ -1,4 +1,4 @@
-angular.module('lair.auth').factory('tokenAuth', function($auth, $http) {
+angular.module('lair').factory('tokenAuth', function($auth, $http) {
 
   function checkToken(token) {
     return $http({

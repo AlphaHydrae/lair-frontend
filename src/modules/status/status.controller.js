@@ -1,4 +1,4 @@
-angular.module('lair.status').controller('StatusCtrl', function(api, $uibModal, $q, $scope, $timeout) {
+angular.module('lair').controller('StatusCtrl', function(api, $uibModal, $q, $scope, $timeout) {
 
   updateImageStats();
 

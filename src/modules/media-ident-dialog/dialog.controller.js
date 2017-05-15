@@ -1,4 +1,4 @@
-angular.module('lair.mediaIdent.dialog').controller('MediaIdentDialogCtrl', function(api, busy, $uibModalInstance, $scope) {
+angular.module('lair').controller('MediaIdentDialogCtrl', function(api, busy, $uibModalInstance, $scope) {
 
   busy($scope, true);
 

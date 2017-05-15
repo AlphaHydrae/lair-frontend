@@ -1,4 +1,4 @@
-angular.module('lair.explorer').directive('explorerItem', function() {
+angular.module('lair').directive('explorerItem', function() {
   return {
     templateUrl: '/modules/explorer/explorer.item.html',
     controller: 'ExplorerItemCtrl',

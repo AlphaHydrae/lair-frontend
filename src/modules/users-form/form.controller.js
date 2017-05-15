@@ -1,3 +1,3 @@
-angular.module('lair.users.form').controller('UserFormCtrl', function($scope) {
+angular.module('lair').controller('UserFormCtrl', function($scope) {
   $scope.roles = [ 'admin' ];
 });

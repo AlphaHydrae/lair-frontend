@@ -1,4 +1,4 @@
-angular.module('lair.api').service('api', function(apiPagination, apiRateLimit, $http, $log, urls) {
+angular.module('lair').service('api', function(apiPagination, apiRateLimit, $http, $log, urls) {
 
   var counter = 0;
 

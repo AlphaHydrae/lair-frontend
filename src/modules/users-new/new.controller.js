@@ -1,4 +1,4 @@
-angular.module('lair.users.new').controller('NewUserCtrl', function(api, forms, $scope, $state, users) {
+angular.module('lair').controller('NewUserCtrl', function(api, forms, $scope, $state, users) {
 
   $scope.user = {
     active: true

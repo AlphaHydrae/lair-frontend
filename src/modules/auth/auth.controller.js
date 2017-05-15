@@ -1,4 +1,4 @@
-angular.module('lair.auth').controller('AuthCtrl', function(auth, $log, $uibModal, $scope) {
+angular.module('lair').controller('AuthCtrl', function(auth, $log, $uibModal, $scope) {
 
   $scope.isAuthenticated = auth.isAuthenticated;
 

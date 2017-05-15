@@ -1,4 +1,4 @@
-angular.module('lair.scrapers').factory('scrapers', function($uibModal) {
+angular.module('lair').factory('scrapers', function($uibModal) {
 
   var service = {
     openErrorModal: function($scope, scrapId) {
