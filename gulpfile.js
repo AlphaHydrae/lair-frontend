@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const addSrc = require('gulp-add-src');
 const autoprefixer = require('gulp-autoprefixer');
 const chain = require('gulp-chain');
 const clean = require('gulp-clean');
@@ -87,7 +88,10 @@ gulp.task('build:js', function() {
   if (config.env == 'production') {
     const templatesStream = buildSrc(src.templates)
       .pipe(slm(getSlmOptions()))
-      .pipe(wrapTemplate());
+      .pipe(wrapTemplate())
+      .pipe(addSrc.prepend('src/template.js.header'))
+      .pipe(addSrc.append('src/template.js.footer'))
+      .pipe(concat('templates.js'));
 
     stream = streamQueue({ objectMode: true }, stream, templatesStream);
   }
@@ -283,10 +287,6 @@ function compileStylus() {
 function compileTemplate() {
   return chain(function(stream) {
     return stream
-      .pipe(through.obj(function(file, enc, callback) {
-        console.log('@@@ 1 ' + file.path);
-        callback(undefined, file);
-      }))
       .pipe(slm(getSlmOptions()))
       .pipe(prettify())
       .pipe(toBuildDir());

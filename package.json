@@ -37,6 +37,7 @@
     "express": "^4.15.2",
     "express-http-proxy": "^1.0.3",
     "gulp": "^3.9.1",
+    "gulp-add-src": "^0.2.0",
     "gulp-autoprefixer": "^4.0.0",
     "gulp-chain": "^2.0.1",
     "gulp-clean": "^0.3.2",
