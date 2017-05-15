@@ -1,5 +1,7 @@
 angular.module('lair', [
+  'angular-storage',
   'angularMoment',
+  'infinite-scroll',
   'ngInflection',
   'ngSanitize',
   'prettyBytes',
@@ -7,6 +9,7 @@ angular.module('lair', [
   'smart-table',
   'ui.bootstrap',
   'ui.date',
+  'ui.gravatar',
   'ui.router',
   'ui.select',
   'ui.sortable',
