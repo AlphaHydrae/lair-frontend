@@ -10,9 +10,9 @@ html ng-app='lair' ng-strict-di=true
     / FIXME: jquery ui theme
     link rel='stylesheet' type='text/css' href='/node_modules/jquery-ui-dist/jquery-ui.css'
     link rel='stylesheet' type='text/css' href='/bootstrap.css'
-    link rel='stylesheet' type='text/css' href='/vendor/stylesheets/bootstrap-social.css'
+    link rel='stylesheet' type='text/css' href='/node_modules/bootstrap-social/bootstrap-social.css'
     link rel='stylesheet' type='text/css' href='/font-awesome.css'
-    link rel='stylesheet' type='text/css' href='/vendor/stylesheets/angular-ui-select.css'
+    link rel='stylesheet' type='text/css' href='/node_modules/ui-select/dist/select.css'
     /! inject:css
     /! endinject
     /! endbuild
@@ -89,24 +89,23 @@ html ng-app='lair' ng-strict-di=true
     script src='/node_modules/moment/moment.js'
     script src='/node_modules/angular-pretty-bytes/bower_components/pretty-bytes/pretty-bytes.js'
     script src='/node_modules/inflection/lib/inflection.js'
-    script src='/vendor/javascripts/angular.js'
-    script src='/vendor/javascripts/angular-sanitize.js'
-    script src='/vendor/javascripts/angular-ui-router.js'
-    script src='/vendor/javascripts/angular-ui-bootstrap-tpls.js'
+    script src='/node_modules/angular/angular.js'
+    script src='/node_modules/angular-sanitize/angular-sanitize.js'
+    script src='/node_modules/angular-ui-router/release/angular-ui-router.js'
+    script src='/node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js'
     script src='/node_modules/angular-storage/dist/angular-storage.js'
     script src='/node_modules/ng-infinite-scroll/build/ng-infinite-scroll.js'
     script src='/node_modules/angular-gravatar/build/angular-gravatar.js'
     script src='/node_modules/angular-ui-date/dist/date.js'
-    script src='/vendor/javascripts/angular-ui-sortable.js'
-    script src='/vendor/javascripts/angular-ui-select.js'
+    script src='/node_modules/angular-ui-sortable/dist/sortable.js'
+    script src='/node_modules/ui-select/dist/select.js'
     script src='/node_modules/angular-moment/angular-moment.js'
     script src='/node_modules/angular-smart-table/dist/smart-table.js'
     script src='/node_modules/angular-pretty-bytes/angular-pretty-bytes.js'
     script src='/node_modules/nginflection/dist/ngInflection.js'
-    script src='/vendor/javascripts/satellizer.js'
+    script src='/node_modules/satellizer/dist/satellizer.js'
     script src='/node_modules/isbn/isbn.js'
     script src='/node_modules/isbn/isbn-groups.js'
-    script src='/vendor/javascripts/bootstrap.js'
     /! inject:js
     /! endinject
     /! endbuild

@@ -41,7 +41,7 @@ let templateWrapper;
 const src = {
   index: 'index.slm',
   fonts: [ 'node_modules/bootstrap/dist/fonts/*.*', 'node_modules/font-awesome/fonts/*.*' ],
-  images: 'vendor/stylesheets/images/*.*',
+  images: 'node_modules/jquery-ui-dist/images/*.*',
   js: '**/*.js',
   less: '**/*.less',
   static: [ 'favicon.ico', 'robots.txt' ],
@@ -167,7 +167,7 @@ gulp.task('server', function() {
     script: 'server/app.js',
     ext: 'js',
     watch: [ 'config/**/*.js', 'server/**/*.js' ],
-    ignore: [ '.git', 'build', 'node_modules', 'src', 'vendor' ],
+    ignore: [ '.git', 'build', 'node_modules', 'src' ],
     stdout: false
   }).on('readable', function() {
     this.stdout.on('data', function(chunk) {
