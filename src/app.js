@@ -41,25 +41,8 @@ angular.module('lair', [
   'lair.users.new'
 ])
 
-  // configuration
   .constant('version', '{{ version }}')
   .constant('env', '{{ env }}')
   .constant('googleClientId', '{{ googleClientId }}')
 
-  // enable debug log unless in production
-  .config(function(env, $logProvider) {
-    $logProvider.debugEnabled(env !== 'production');
-  })
-
-  // satellizer
-  .config(function($authProvider, googleClientId) {
-    $authProvider.google({
-      clientId: googleClientId
-    });
-  })
-
-  // angular-ui-select
-  .config(function(uiSelectConfig) {
-    uiSelectConfig.theme = 'bootstrap';
-  })
 ;

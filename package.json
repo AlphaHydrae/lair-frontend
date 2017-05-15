@@ -2,7 +2,7 @@
   "name": "lair-frontend",
   "version": "0.1.0",
   "private": true,
-  "main": "server/app.js",
+  "main": "server.js",
   "scripts": {
     "start": "gulp",
     "test": "gulp test"

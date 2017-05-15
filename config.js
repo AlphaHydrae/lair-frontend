@@ -1,11 +1,11 @@
 const _ = require('lodash');
 const dotenv = require('dotenv');
 const path = require('path');
-const pkg = require('../package');
+const pkg = require('./package');
 
 const envs = [ 'development', 'production' ];
 const env = process.env.ENV || process.env.NODE_ENV || 'development';
-const root = path.normalize(path.join(__dirname, '..'));
+const root = path.normalize(__dirname);
 
 const fixed = {
   env: env,

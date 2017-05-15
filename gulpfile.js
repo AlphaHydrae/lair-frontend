@@ -164,9 +164,9 @@ gulp.task('server', function() {
   livereload.listen();
 
   return nodemon({
-    script: 'server/app.js',
+    script: 'server.js',
     ext: 'js',
-    watch: [ 'config/**/*.js', 'server/**/*.js' ],
+    watch: [ 'config.js', 'server.js' ],
     ignore: [ '.git', 'build', 'node_modules', 'src' ],
     stdout: false
   }).on('readable', function() {
