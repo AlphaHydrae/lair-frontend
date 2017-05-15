@@ -188,31 +188,31 @@ gulp.task('watch:build', function() {
 });
 
 gulp.task('watch:index', function() {
-  return watchSrc(src.index, function(file) {
-    return buildSrc(file.path)
+  return watchSrc(src.index, function(stream) {
+    return stream
       .pipe(compileIndex());
   });
 });
 
 gulp.task('watch:js', function() {
-  return watchSrc(src.js, function(file) {
-    return buildSrc(file.path)
+  return watchSrc(src.js, function(stream) {
+    return stream
       .pipe(compileJavaScript())
       .pipe(handleAssetChange());
   });
 });
 
 gulp.task('watch:styl', function() {
-  return watchSrc(src.styl, function(file) {
-    return buildSrc(file.path)
+  return watchSrc(src.styl, function(stream) {
+    return stream
       .pipe(compileStylus())
       .pipe(handleAssetChange());
   });
 });
 
 gulp.task('watch:templates', function() {
-  return watchSrc(src.templates, function(file) {
-    return buildSrc(file.path)
+  return watchSrc(src.templates, function(stream) {
+    return stream
       .pipe(compileTemplate());
   });
 });
@@ -283,6 +283,10 @@ function compileStylus() {
 function compileTemplate() {
   return chain(function(stream) {
     return stream
+      .pipe(through.obj(function(file, enc, callback) {
+        console.log('@@@ 1 ' + file.path);
+        callback(undefined, file);
+      }))
       .pipe(slm(getSlmOptions()))
       .pipe(prettify())
       .pipe(toBuildDir());
@@ -397,6 +401,6 @@ function watchSrc(files, options, callback) {
   }
 
   return watch(files, _.extend({}, options, { cwd: srcDir }), function(file) {
-    return callback(gulp.src(file.path, { cwd: srcDir }), file);
+    return callback(gulp.src(file.path, { base: srcDir }), file);
   });
 }
