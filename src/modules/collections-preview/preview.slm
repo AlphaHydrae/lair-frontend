@@ -15,7 +15,7 @@
 
     h3.panel-title
       a href='#' ui-sref='collection({ userName: collection.user.name, collectionName: collection.name })'
-        | {{ collection.displayName }}
+        | {{ collection.displayName }}
       small ng-if='totalWorks || totalItems'
         a href='#' ui-sref='collection({ userName: collection.user.name, collectionName: collection.name })'
           span ng-if='totalWorks >= 2' {{ totalWorks }} works, 
