@@ -1,0 +1,24 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    dotenv (2.2.1)
+    highline (1.7.8)
+    net-scp (1.2.1)
+      net-ssh (>= 2.6.5)
+    net-ssh (4.1.0)
+    rake (12.0.0)
+    sshkit (1.13.1)
+      net-scp (>= 1.1.2)
+      net-ssh (>= 2.8.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  dotenv (~> 2.2)
+  highline (~> 1.7)
+  rake (~> 12.0)
+  sshkit (~> 1.13)
+
+BUNDLED WITH
+   1.14.6
