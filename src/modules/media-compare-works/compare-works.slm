@@ -1,0 +1,27 @@
+#media-compare-works
+  p.lead ng-if='!compareWorksCtrl.category || !compareWorksCtrl.user1 || !compareWorksCtrl.user2'
+    | Select a category and 2 users to start the comparison
+
+  .col-sm-6.col-xs-12
+    uib-progressbar.progress-striped.active ng-if='compareWorksCtrl.fetchingMissingWorksUser1' value='compareWorksCtrl.missingWorksPercentage.user1' Loading...
+
+    p ng-if='compareWorksCtrl.user1 && compareWorksCtrl.fetchedMissingWorksUser1'
+      span ng-if='compareWorksCtrl.missingWorks.user1.length' {{ compareWorksCtrl.user1.name }} is missing the following:
+      span ng-if='!compareWorksCtrl.missingWorks.user1.length' {{ compareWorksCtrl.user1.name }} is not missing anything.
+
+    ul.list-group ng-if='compareWorksCtrl.missingWorks.user1.length'
+      li.list-group-item ng-repeat='work in compareWorksCtrl.missingWorks.user1'
+        span> {{ work.titles[0].text }}
+        small ng-if='compareWorksCtrl.secondaryTitle(work)' {{ compareWorksCtrl.secondaryTitle(work) }}
+
+  .col-sm-6.col-xs-12
+    uib-progressbar.progress-striped.active ng-if='compareWorksCtrl.fetchingMissingWorksUser2' value='compareWorksCtrl.missingWorksPercentage.user2' Loading...
+
+    p ng-if='compareWorksCtrl.user2 && compareWorksCtrl.fetchedMissingWorksUser2'
+      span ng-if='compareWorksCtrl.missingWorks.user2.length' {{ compareWorksCtrl.user2.name }} is missing the following:
+      span ng-if='!compareWorksCtrl.missingWorks.user2.length' {{ compareWorksCtrl.user2.name }} is not missing anything.
+
+    ul.list-group ng-if='compareWorksCtrl.missingWorks.user2.length'
+      li.list-group-item ng-repeat='work in compareWorksCtrl.missingWorks.user2'
+        span> {{ work.titles[0].text }}
+        small.secondary-title ng-if='compareWorksCtrl.secondaryTitle(work)' {{ compareWorksCtrl.secondaryTitle(work) }}
