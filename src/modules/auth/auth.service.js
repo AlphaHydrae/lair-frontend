@@ -34,9 +34,12 @@ angular.module('lair').factory('auth', function(appStore, $auth, $log, $rootScop
         return false;
       }
 
-      var requiredRoles = Array.prototype.slice.call(arguments),
-          currentUserRoles = service.currentUser.roles || [];
+      var currentUserRoles = service.currentUser.roles || [];
+      if (_.includes(currentUserRoles, 'admin')) {
+        return true;
+      }
 
+      var requiredRoles = Array.prototype.slice.call(arguments);
       return _.intersection(currentUserRoles, requiredRoles).length == requiredRoles.length;
     },
 
