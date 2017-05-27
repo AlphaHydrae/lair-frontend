@@ -1,4 +1,7 @@
-angular.module('lair').controller('FileExplorerCtrl', function(api, auth, $location, $scope, scrapers, $stateParams) {
+angular.module('lair').controller('FileExplorerCtrl', function(api, auth, $location, $scope, scrapers, showMediaFileDialog, $stateParams) {
+
+  var fileModal;
+  var fileShown = $stateParams.file;
 
   $scope.mediaFilesList = {
     records: [],
@@ -62,6 +65,10 @@ angular.module('lair').controller('FileExplorerCtrl', function(api, auth, $locat
     if ((search.deleted || 0) != params.deleted) {
       params.deleted = search.deleted;
     }
+
+    if (search.file != fileShown) {
+      $scope.openFile(search.file);
+    }
   });
 
   $scope.$watch('mediaFilesList.httpSettings.params.directory', function(directory) {
@@ -87,7 +94,7 @@ angular.module('lair').controller('FileExplorerCtrl', function(api, auth, $locat
 
   $scope.breadcrumbs = [];
 
-  $scope.open = function(path) {
+  $scope.openDirectory = function(path) {
 
     var params = $scope.mediaFilesList.httpSettings.params,
         currentDirectory = params.directory;
@@ -102,6 +109,38 @@ angular.module('lair').controller('FileExplorerCtrl', function(api, auth, $locat
     } else {
       resetBreadcrumbs();
     }
+  };
+
+  $scope.openFile = function(fileOrId) {
+    if (!fileOrId) {
+      if (fileModal) {
+        fileModal.dismiss();
+      }
+      fileShown = undefined;
+      return;
+    }
+
+    var file;
+    var fileId;
+    if (fileOrId.id) {
+      file = fileOrId;
+      fileId = fileOrId.id;
+    } else {
+      fileId = fileOrId;
+    }
+
+    fileShown = fileId;
+    $location.search('file', fileId);
+
+    fileModal = showMediaFileDialog.open({
+      file: file,
+      fileId: fileId
+    });
+
+    fileModal.result.finally(function() {
+      fileModal = undefined;
+      $location.search('file', null);
+    });
   };
 
   $scope.openRoot = function() {
@@ -162,6 +201,10 @@ angular.module('lair').controller('FileExplorerCtrl', function(api, auth, $locat
       }
     }
   }, true);
+
+  if (fileShown) {
+    $scope.openFile(fileShown);
+  }
 
   function nfoIs(file, state) {
     return !file.deleted && file.type == 'file' && file.extension == 'nfo' && file.state == state;

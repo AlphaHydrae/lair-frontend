@@ -98,10 +98,10 @@ angular.module('lair')
       })
 
       .state('files.explorer', {
-        url: '?source&directory&deleted',
+        url: '?source&directory&deleted&file',
         reloadOnSearch: false,
         controller: 'FileExplorerCtrl',
-        templateUrl: '/modules/files-explorer/explorer.html'
+        templateUrl: '/modules/media-files-explorer/explorer.html'
       })
 
       .state('mediaCompare', {

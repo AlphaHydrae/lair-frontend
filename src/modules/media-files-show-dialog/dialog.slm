@@ -1,0 +1,38 @@
+#show-media-file-dialog
+
+  .modal-header
+    h3
+      span> ng-if='!dialogCtrl.file' Loading...
+      span> ng-if='dialogCtrl.file' {{ dialogCtrl.file.basename }}
+      small< ng-if='dialogCtrl.file' in {{ dialogCtrl.file.dirname }}
+
+  table.table ng-if='dialogCtrl.file'
+    tbody
+      tr
+        th State
+        td
+          strong class='{{ dialogCtrl.getStateClass() }}' {{ dialogCtrl.file.state }}
+      tr
+        th Type
+        td {{ dialogCtrl.file.mediaType }}
+      tr
+        th File creation date
+        td {{ dialogCtrl.file.fileCreatedAt | amDateFormat: 'lll' }}
+      tr
+        th File modification date
+        td {{ dialogCtrl.file.fileModifiedAt | amDateFormat: 'lll' }}
+      tr
+        th Last scanned at
+        td {{ dialogCtrl.file.scannedAt | amDateFormat: 'lll' }}
+      tr
+        th Size
+        td {{ dialogCtrl.file.size | prettyBytes }}
+      tr ng-if='dialogCtrl.file.mediaUrl'
+        th URL
+        td
+          a href='{{ dialogCtrl.file.mediaUrl.url }}' target='_blank'
+            | {{ dialogCtrl.file.mediaUrl.url }}
+
+  .modal-footer
+    .btn-group.pull-right
+      button.btn.btn-default type='button' ng-click='dialogCtrl.dismiss()' Close
