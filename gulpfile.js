@@ -186,8 +186,12 @@ gulp.task('server', function() {
 });
 
 gulp.task('watch:build', function() {
-  return watch('**/*.*', { cwd: buildDir }, function(file) {
-    livereload.changed(file.relative);
+  return watch('**/*', { cwd: buildDir }, function(file) {
+    if (_.includes([ 'add', 'unlink' ], file.event) && _.includes([ '.js', '.css' ], path.extname(file.path))) {
+      debouncedRebuildIndex();
+    } else {
+      livereload.changed(file.relative);
+    }
   });
 });
 
@@ -199,18 +203,24 @@ gulp.task('watch:index', function() {
 });
 
 gulp.task('watch:js', function() {
-  return watchSrc(src.js, function(stream) {
-    return stream
-      .pipe(compileJavaScript())
-      .pipe(handleAssetChange());
+  return watchSrc(src.js, function(stream, file) {
+    if (file.event == 'unlink') {
+      return cleanUpCompiledAsset(file);
+    } else {
+      return stream
+        .pipe(compileJavaScript());
+    }
   });
 });
 
 gulp.task('watch:styl', function() {
-  return watchSrc(src.styl, function(stream) {
-    return stream
-      .pipe(compileStylus())
-      .pipe(handleAssetChange());
+  return watchSrc(src.styl, function(stream, file) {
+    if (file.event == 'unlink') {
+      return cleanUpCompiledAsset(file, 'css');
+    } else {
+      return stream
+        .pipe(compileStylus());
+    }
   });
 });
 
@@ -351,37 +361,22 @@ function getClientConfig() {
   return _.pick(config, 'env', 'googleClientId', 'liveReloadUrl', 'version');
 }
 
-function rebuildIndex() {
-  return through.obj(function(file, enc, callback) {
-    debouncedRebuildIndex();
-    callback(null, file);
-  });
-}
-
 var debouncedRebuildIndex = _.debounce(function() {
   util.log('Rebuilding index');
   return buildSrc('index.slm')
     .pipe(compileIndex());
 }, 500);
 
-function handleAssetChange() {
-  return through.obj(function(file, enc, callback) {
-    if (file.event == 'change') {
-      // Ignore changes
-    } else if (file.event == 'add') {
-      // If the asset is a new file, rebuild and reload the index to include it
-      debouncedRebuildIndex();
-    } else if (file.event == 'unlink') {
-      // If the asset was deleted, rebuild and reload the index to omit it
-      debouncedRebuildIndex();
-    } else if (!_.has(file, 'event')) {
-      throw new Error('File does not appear to be from gulp-watch (it has no `event` property)');
-    } else {
-      throw new Error('Unsupported gulp-watch event type ' + JSON.stringify(file.event));
-    }
+function cleanUpCompiledAsset(file, ext) {
 
-    callback(undefined, file);
-  });
+  let compiledPath = file.relative;
+  if (ext) {
+    compiledPath = compiledPath.replace(/\.[^\.]+$/, `.${ext}`);
+  }
+
+  return gulp.src(compiledPath, { cwd: buildDir })
+    .pipe(tap(file => util.log(util.colors.red(compiledPath))))
+    .pipe(clean());
 }
 
 function buildSrc(files, options) {
