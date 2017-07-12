@@ -34,5 +34,9 @@
             | {{ dialogCtrl.file.mediaUrl.url }}
 
   .modal-footer
+    .btn-group.pull-left ng-if='dialogCtrl.currentUserIs("admin") && dialogCtrl.file'
+      button.btn.btn-warning type='button' ng-click='dialogCtrl.analyze()'
+        span.fa.fa-wrench
+        |  Analyze
     .btn-group.pull-right
       button.btn.btn-default type='button' ng-click='dialogCtrl.dismiss()' Close

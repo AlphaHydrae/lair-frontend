@@ -23,10 +23,13 @@ angular.module('lair').factory('showMediaFileDialog', function($uibModal) {
     dismiss: '&',
     resolve: '<'
   }
-}).controller('ShowMediaFileDialogCtrl', function(api) {
+}).controller('ShowMediaFileDialogCtrl', function(api, auth) {
 
   var dialogCtrl = this;
+  dialogCtrl.analyze = analyze;
   dialogCtrl.getStateClass = getStateClass;
+
+  auth.addAuthFunctions(this);
 
   if (dialogCtrl.resolve.file) {
     dialogCtrl.file = dialogCtrl.resolve.file;
@@ -39,6 +42,10 @@ angular.module('lair').factory('showMediaFileDialog', function($uibModal) {
     }).then(function(res) {
       dialogCtrl.file = res.data;
     });
+  }
+
+  function analyze() {
+    console.log('Not yet implemented');
   }
 
   function getStateClass() {
