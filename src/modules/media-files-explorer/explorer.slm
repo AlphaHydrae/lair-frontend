@@ -45,15 +45,15 @@
           span ng-if='$index == breadcrumbs.length - 1' {{ directory | basename }}
 
       .alert ng-if='directoryMessage && directoryMessageType' ng-class='{"alert-danger": directoryMessageType == "error", "alert-warning": directoryMessageType == "warning", "alert-info": directoryMessageType == "info"}'
-        span ng-if='directoryMessage == "nfoDuplicated"'
+        span ng-if='directoryMessage == "nfoDuplicate"'
           strong> Duplicate NFOs:
-          span ng-if='duplicatedNfoCount >= 2'
-            | This directory contains {{ duplicatedNfoCount }} NFO files.
+          span ng-if='duplicateNfoCount >= 2'
+            | This directory contains {{ duplicateNfoCount }} NFO files.
             |  Directories with media files must contain one and exactly one NFO file.
             |  This NFO file should contain a URL that identifies the media and is
             a<> href='#' ng-click='showSupportedScrapers()' supported by one of our scrapers
             | .
-          span ng-if='duplicatedNfoCount == 1'
+          span ng-if='duplicateNfoCount == 1'
             | Another NFO file is present in a parent directory or sub-directory.
             |  Only one NFO file must be present in a directory tree.
             |  This NFO file should contain a URL that identifies the media and is
@@ -98,7 +98,7 @@
               span ng-if='!file.deleted' {{ file.path | basename }}
             span.label.label-danger.pull-right ng-if='file.error == "fileDeleted"' Deleted
             span.label.label-danger.pull-right ng-if='file.error == "nfoInvalid"' Invalid
-            span.label.label-danger.pull-right ng-if='file.error == "nfoDuplicated"' Duplicate
+            span.label.label-danger.pull-right ng-if='file.error == "nfoDuplicate"' Duplicate
             span.label.label-warning.pull-right ng-if='file.warning == "fileIsUnlinked"' Unidentified
             a href='#' ng-if='file.type == "file"' ng-click='openFile(file)'
               span.glyphicon.glyphicon-file

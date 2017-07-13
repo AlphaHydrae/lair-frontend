@@ -156,8 +156,8 @@ angular.module('lair').controller('FileExplorerCtrl', function(api, auth, $locat
     _.each(res.data, function(file) {
       if (file.deleted) {
         file.error = 'fileDeleted';
-      } else if (nfoIs(file, 'duplicated')) {
-        file.error = 'nfoDuplicated';
+      } else if (nfoIs(file, 'duplicate')) {
+        file.error = 'nfoDuplicate';
       } else if (nfoIs(file, 'invalid')) {
         file.error = 'nfoInvalid';
       } else if (directoryHasUnlikedFiles(file)) {
@@ -176,15 +176,15 @@ angular.module('lair').controller('FileExplorerCtrl', function(api, auth, $locat
       delete $scope.directoryMessage;
       delete $scope.directoryMessageType;
       delete $scope.nfoFile;
-      delete $scope.duplicatedNfoCount;
+      delete $scope.duplicateNfoCount;
 
       var nfoFile = _.find(records, { type: 'file', deleted: false, extension: 'nfo' }),
-          duplicatedNfoCount = _.filter(records, { error: 'nfoDuplicated' }).length;
+          duplicateNfoCount = _.filter(records, { error: 'nfoDuplicate' }).length;
 
-      if (duplicatedNfoCount) {
+      if (duplicateNfoCount) {
         $scope.directoryMessageType = 'error';
-        $scope.directoryMessage = 'nfoDuplicated';
-        $scope.duplicatedNfoCount = duplicatedNfoCount;
+        $scope.directoryMessage = 'nfoDuplicate';
+        $scope.duplicateNfoCount = duplicateNfoCount;
       } else if (nfoFile && nfoFile.error == 'nfoInvalid') {
         $scope.directoryMessageType = 'error';
         $scope.directoryMessage = 'nfoInvalid';
@@ -206,8 +206,8 @@ angular.module('lair').controller('FileExplorerCtrl', function(api, auth, $locat
     $scope.openFile(fileShown);
   }
 
-  function nfoIs(file, state) {
-    return !file.deleted && file.type == 'file' && file.extension == 'nfo' && file.state == state;
+  function nfoIs(file, error) {
+    return !file.deleted && file.type == 'file' && file.extension == 'nfo' && file.nfoError == error;
   }
 
   function directoryHasUnlikedFiles(file) {
@@ -215,11 +215,11 @@ angular.module('lair').controller('FileExplorerCtrl', function(api, auth, $locat
   }
 
   function fileIsUnlinked(file) {
-    return !file.deleted && file.type == 'file' && file.extension != 'nfo' && file.state != 'linked';
+    return !file.deleted && file.type == 'file' && file.extension != 'nfo' && !file.mediaUrlId;
   }
 
   function fileIsBeingProcessed(file) {
-    return !file.deleted && file.type == 'file' && file.state == 'created';
+    return !file.deleted && file.type == 'file' && !file.analyzed;
   }
 
   function resetBreadcrumbs() {

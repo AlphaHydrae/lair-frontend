@@ -9,10 +9,6 @@
   table.table ng-if='dialogCtrl.file'
     tbody
       tr
-        th State
-        td
-          strong class='{{ dialogCtrl.getStateClass() }}' {{ dialogCtrl.file.state }}
-      tr
         th Type
         td {{ dialogCtrl.file.mediaType }}
       tr
@@ -33,6 +29,10 @@
           a href='{{ dialogCtrl.file.mediaUrl.url }}' target='_blank' ng-if='dialogCtrl.file.mediaUrl'
             | {{ dialogCtrl.file.mediaUrl.url }}
           em.empty ng-if='!dialogCtrl.file.mediaUrl' None
+      tr ng-if='dialogCtrl.file.nfoError'
+        th NFO error
+        td
+          .text-danger {{ dialogCtrl.file.nfoError }}
       tr ng-if='dialogCtrl.currentUserIs("mediaManager")'
         th Analyzed
         td ng-if='!dialogCtrl.analyzing'

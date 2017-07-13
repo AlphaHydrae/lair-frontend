@@ -27,7 +27,6 @@ angular.module('lair').factory('showMediaFileDialog', function($uibModal) {
 
   var dialogCtrl = this;
   dialogCtrl.analyze = analyze;
-  dialogCtrl.getStateClass = getStateClass;
 
   auth.addAuthFunctions(this);
 
@@ -50,18 +49,6 @@ angular.module('lair').factory('showMediaFileDialog', function($uibModal) {
         $log.warn(err);
         dialogCtrl.analysisFailed = true;
       });
-  }
-
-  function getStateClass() {
-    if (_.includes([ 'created', 'changed' ], dialogCtrl.file.state)) {
-      return 'text-info';
-    } else if (_.includes([ 'unlinked' ], dialogCtrl.file.state)) {
-      return 'text-warning';
-    } else if (_.includes([ 'deleted', 'invalid', 'duplicated' ])) {
-      return 'text-danger';
-    } else {
-      return 'text-success';
-    }
   }
 
   function fetchFile(id) {
