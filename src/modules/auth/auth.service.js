@@ -1,6 +1,7 @@
 angular.module('lair').factory('auth', function(appStore, $auth, $log, $rootScope, tokenAuth) {
 
   var service = {
+    roles: [ 'admin', 'mediaManager' ],
 
     authenticate: function(provider, authCredentials) {
       if (provider === 'token') {
@@ -34,12 +35,17 @@ angular.module('lair').factory('auth', function(appStore, $auth, $log, $rootScop
         return false;
       }
 
+      var requiredRoles = Array.prototype.slice.call(arguments);
+      var unknownRoles = _.difference(requiredRoles, service.roles);
+      if (unknownRoles.length) {
+        throw new Error('Unknown roles ' + unknownRoles.join(', '));
+      }
+
       var currentUserRoles = service.currentUser.roles || [];
       if (_.includes(currentUserRoles, 'admin')) {
         return true;
       }
 
-      var requiredRoles = Array.prototype.slice.call(arguments);
       return _.intersection(currentUserRoles, requiredRoles).length == requiredRoles.length;
     },
 
