@@ -23,7 +23,7 @@ angular.module('lair').factory('showMediaFileDialog', function($uibModal) {
     dismiss: '&',
     resolve: '<'
   }
-}).controller('ShowMediaFileDialogCtrl', function(api, auth) {
+}).controller('ShowMediaFileDialogCtrl', function(api, auth, $log, polling, $q) {
 
   var dialogCtrl = this;
   dialogCtrl.analyze = analyze;
@@ -34,18 +34,22 @@ angular.module('lair').factory('showMediaFileDialog', function($uibModal) {
   if (dialogCtrl.resolve.file) {
     dialogCtrl.file = dialogCtrl.resolve.file;
   } else {
-    api({
-      url: '/media/files/' + dialogCtrl.resolve.fileId,
-      params: {
-        include: 'mediaUrl'
-      }
-    }).then(function(res) {
+    fetchFile(dialogCtrl.resolve.fileId).then(function(res) {
       dialogCtrl.file = res.data;
     });
   }
 
   function analyze() {
-    console.log('Not yet implemented');
+    dialogCtrl.analyzing = true;
+    dialogCtrl.analysisFailed = false;
+
+    $q.when()
+      .then(analyzeFile)
+      .then(pollFileAnalysis)
+      .catch(function(err) {
+        $log.warn(err);
+        dialogCtrl.analysisFailed = true;
+      });
   }
 
   function getStateClass() {
@@ -58,5 +62,35 @@ angular.module('lair').factory('showMediaFileDialog', function($uibModal) {
     } else {
       return 'text-success';
     }
+  }
+
+  function fetchFile(id) {
+    return api({
+      url: '/media/files/' + id,
+      params: {
+        include: 'mediaUrl'
+      }
+    });
+  }
+
+  function analyzeFile() {
+    return api({
+      method: 'POST',
+      url: '/media/files/' + dialogCtrl.file.id + '/analysis'
+    });
+  }
+
+  function pollFileAnalysis() {
+    return polling.poll(function() {
+      return fetchFile(dialogCtrl.file.id).then(function(res) {
+        return res.data;
+      });
+    }, function(file) {
+      return file.analyzed;
+    }).then(function(file) {
+      dialogCtrl.file = file;
+    }).finally(function() {
+      dialogCtrl.analyzing = false;
+    });
   }
 });

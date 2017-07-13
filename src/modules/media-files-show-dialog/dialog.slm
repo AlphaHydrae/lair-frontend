@@ -27,15 +27,26 @@
       tr
         th Size
         td {{ dialogCtrl.file.size | prettyBytes }}
-      tr ng-if='dialogCtrl.file.mediaUrl'
+      tr
         th URL
         td
-          a href='{{ dialogCtrl.file.mediaUrl.url }}' target='_blank'
+          a href='{{ dialogCtrl.file.mediaUrl.url }}' target='_blank' ng-if='dialogCtrl.file.mediaUrl'
             | {{ dialogCtrl.file.mediaUrl.url }}
+          em.empty ng-if='!dialogCtrl.file.mediaUrl' None
+      tr ng-if='dialogCtrl.currentUserIs("mediaManager")'
+        th Analyzed
+        td ng-if='!dialogCtrl.analyzing'
+          .label.label-success ng-if='dialogCtrl.file.analyzed && !dialogCtrl.analysisFailed' yes
+          .label.label-warning ng-if='!dialogCtrl.file.analyzed && !dialogCtrl.analysisFailed' no
+          .label.label-danger ng-if='dialogCtrl.analysisFailed' error
+        td ng-if='dialogCtrl.analyzing'
+          .progress
+            .progress-bar.progress-bar-striped.active role='progressbar' style='width:100%'
+              .sr-only Analyzing
 
   .modal-footer
     .btn-group.pull-left ng-if='dialogCtrl.currentUserIs("admin") && dialogCtrl.file'
-      button.btn.btn-warning type='button' ng-click='dialogCtrl.analyze()'
+      button.btn type='button' ng-click='dialogCtrl.analyze()' ng-class='{"btn-default": dialogCtrl.file.analyzed, "btn-warning": !dialogCtrl.file.analyzed}' ng-disabled='dialogCtrl.analyzing'
         span.fa.fa-wrench
         |  Analyze
     .btn-group.pull-right
