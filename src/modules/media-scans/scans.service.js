@@ -2,7 +2,7 @@ angular.module('lair').factory('mediaScans', function() {
 
   var service = {
     isInProgress: function(scan) {
-      return scan && (scan.state == 'created' || scan.state == 'scanning' || scan.state == 'scanned' || scan.state == 'processing' || scan.state == 'processed' || scan.state == 'analyzing')
+      return scan && (scan.state == 'created' || scan.state == 'scanning' || scan.state == 'scanned' || scan.state == 'processing');
     },
 
     getDuration: function(scan) {
@@ -11,10 +11,8 @@ angular.module('lair').factory('mediaScans', function() {
       }
 
       var endTime;
-      if (scan.state == 'analyzed') {
-        endTime = moment(scan.analyzedAt).valueOf();
-      } else if (scan.state == 'analysisFailed') {
-        endTime = moment(scan.analysisFailedAt).valueOf();
+      if (scan.state == 'processed') {
+        endTime = moment(scan.processedAt).valueOf();
       } else if (scan.state == 'processingFailed') {
         endTime = moment(scan.processingFailedAt).valueOf();
       } else if (scan.state == 'canceled') {
