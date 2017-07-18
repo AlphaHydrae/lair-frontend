@@ -1,0 +1,48 @@
+#auth-token-dialog
+
+  .modal-header
+    h3
+      span> Generate an authentication token
+
+  .modal-body
+    p.lead
+      | An authentication token allows
+      strong  third-party clients
+      |  to make API requests on your behalf.
+      strong  Limit
+      |  what they can do by selecting only the scopes they need.
+
+    form
+      .form-group
+        label for='token-expires-at' Expiration date
+        input#token-expires-at.form-control ui-date='authTokenDialogCtrl.dateOptions' ng-model='authTokenDialogCtrl.token.expiresAt' placeholder='2 weeks from now'
+
+  table.table.table-hover
+    thead
+      tr
+        th.name Scope
+        th What it allows
+        th.authorized
+          span ng-click='authTokenDialogCtrl.toggleAllScopes()' Authorized
+    tbody
+      tr ng-repeat='scope in authTokenDialogCtrl.scopes' ng-click='authTokenDialogCtrl.toggleScope(scope, $event)'
+        td
+          code {{ scope.name }}
+        td {{ scope.description }}
+        td.authorized
+          input type='checkbox' ng-model='authTokenDialogCtrl.authorized[scope.name]' ng-disabled='!authTokenDialogCtrl.isScopeEnabled(scope)'
+
+  .modal-body ng-if='authTokenDialogCtrl.generatedToken'
+    form.clearfix
+      .form-group.has-success
+        label.control-label for='generated-token' Your token, use it wisely
+        .input-group
+          input#generated-token.form-control type='text' readonly=true value='{{ authTokenDialogCtrl.generatedToken }}'
+          span.input-group-btn
+            button type='button' class='btn btn-default' uib-tooltip='Copy to clipboard' clipboard=true text='authTokenDialogCtrl.generatedToken'
+              span class='glyphicon glyphicon-copy'
+
+  .modal-footer
+    .btn-group.pull-right
+      button.btn.btn-default type='button' ng-click='$dismiss()' Close
+      button.btn.btn-primary type='button' ng-disabled='!authTokenDialogCtrl.isTokenValid()' ng-click='authTokenDialogCtrl.generateToken()' Generate

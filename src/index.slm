@@ -106,6 +106,7 @@ html ng-app='lair' ng-strict-di=true
     script src='/node_modules/satellizer/dist/satellizer.js'
     script src='/node_modules/isbn/isbn.js'
     script src='/node_modules/isbn/isbn-groups.js'
+    script src='/node_modules/angular-clipboard/angular-clipboard.js'
     /! inject:js
     /! endinject
     /! endbuild

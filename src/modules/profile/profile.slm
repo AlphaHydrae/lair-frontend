@@ -13,9 +13,6 @@
         button.btn.btn-primary type='submit' ng-disabled='!changed() || userForm.$invalid' Save
 
   .auth-tokens
-    form.clearfix name='tokenForm'
-      button.btn.btn-default ng-click='generateAuthToken()'
-        span.glyphicon.glyphicon-lock
-        |  Generate an authentication token
-      .form-group
-        input.form-control ng-if='authToken' readonly=true value='{{ authToken }}'
+    button.btn.btn-default ng-click='openAuthTokenDialog()'
+      span.glyphicon.glyphicon-lock
+      |  Generate an authentication token

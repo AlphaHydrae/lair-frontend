@@ -1,4 +1,5 @@
 angular.module('lair', [
+  'angular-clipboard',
   'angular-storage',
   'angularMoment',
   'infinite-scroll',

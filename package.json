@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "angular": "1.5.8",
+    "angular-clipboard": "^1.6.0",
     "angular-gravatar": "^0.4.2",
     "angular-moment": "^1.0.1",
     "angular-pretty-bytes": "^1.0.1",

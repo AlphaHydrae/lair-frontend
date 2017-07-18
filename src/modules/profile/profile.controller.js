@@ -1,23 +1,18 @@
-angular.module('lair').controller('ProfileCtrl', function(api, auth, forms, $scope) {
+angular.module('lair').controller('ProfileCtrl', function(api, auth, authTokenDialog, forms, $scope) {
 
   $scope.user = _.omit($scope.currentUser, 'activeAt');
 
   $scope.save = saveProfile;
   $scope.reset = resetModifiedUser;
-  $scope.generateAuthToken = generateAuthToken;
+  $scope.openAuthTokenDialog = openAuthTokenDialog;
   $scope.$watch('user', resetModifiedUser);
 
   $scope.changed = function() {
     return !forms.dataEquals($scope.user, $scope.modifiedUser);
   };
 
-  function generateAuthToken() {
-    api({
-      method: 'POST',
-      url: '/tokens'
-    }).then(function(res) {
-      $scope.authToken = res.data.token;
-    });
+  function openAuthTokenDialog() {
+    authTokenDialog.open($scope);
   }
 
   function saveProfile() {
