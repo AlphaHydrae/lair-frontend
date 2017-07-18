@@ -1,3 +1,3 @@
-angular.module('lair').controller('UserFormCtrl', function(auth, $scope) {
-  $scope.roles = auth.roles;
+angular.module('lair').controller('UserFormCtrl', function($scope, userRoles) {
+  $scope.roles = userRoles;
 });
