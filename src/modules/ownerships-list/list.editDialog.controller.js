@@ -1,7 +1,8 @@
 angular.module('lair').controller('EditOwnershipCtrl', function(api, $log, $uibModalInstance, $scope) {
 
   $scope.dateOptions = {
-    dateFormat: 'yy-mm-dd'
+    dateFormat: 'yy-mm-dd',
+    firstDay: 1
   };
 
   $scope.$on('reset', function() {

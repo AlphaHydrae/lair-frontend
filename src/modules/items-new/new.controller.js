@@ -76,7 +76,8 @@ angular.module('lair').controller('NewItemCtrl', function(api, $log, moment, ite
   }
 
   $scope.dateOptions = {
-    dateFormat: 'yy-mm-dd'
+    dateFormat: 'yy-mm-dd',
+    firstDay: 1
   };
 
   $scope.ownership = {

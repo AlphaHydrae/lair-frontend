@@ -2,6 +2,7 @@ angular.module('lair').controller('YieldDialogCtrl', function(api, auth, $scope)
 
   $scope.dateOptions = {
     dateFormat: 'yy-mm-dd',
+    firstDay: 1,
     maxDate: new Date()
   };
 

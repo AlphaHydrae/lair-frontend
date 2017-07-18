@@ -1,7 +1,8 @@
 angular.module('lair').controller('OwnDialogCtrl', function($scope) {
 
   $scope.dateOptions = {
-    dateFormat: 'yy-mm-dd'
+    dateFormat: 'yy-mm-dd',
+    firstDay: 1
   };
 
   $scope.ownership = {
