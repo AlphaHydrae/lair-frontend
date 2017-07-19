@@ -6,7 +6,7 @@ angular.module('lair')
       description: 'All actions'
     },
     {
-      name: 'media',
+      name: 'media:scanning',
       description: 'Manage media scanners, settings & sources, scan media files'
     }
   ]);
