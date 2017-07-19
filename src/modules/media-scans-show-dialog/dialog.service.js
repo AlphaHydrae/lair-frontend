@@ -27,10 +27,10 @@ angular.module('lair').factory('showMediaScanDialog', function($uibModal) {
   }
 
   var page = 0;
-  var pageSize = 100;
   $scope.changes = [];
   $scope.currentPage = 1;
   $scope.changesPageLinks = [];
+  $scope.pageSize = 100;
   $scope.scanDuration = mediaScans.getDuration;
 
   $scope.$watch('mediaScan.id', function(value) {
@@ -40,6 +40,7 @@ angular.module('lair').factory('showMediaScanDialog', function($uibModal) {
   });
 
   $scope.showChangesPage = showChangesPage;
+  $scope.getChangesRange = getChangesRange;
 
   $scope.retry = function() {
     api({
@@ -49,6 +50,12 @@ angular.module('lair').factory('showMediaScanDialog', function($uibModal) {
       $uibModalInstance.dismiss();
     });
   };
+
+  function getChangesRange() {
+    var start = ($scope.currentPage - 1) * $scope.pageSize;
+    var end = Math.min($scope.currentPage * $scope.pageSize - 1, $scope.mediaScan.changedFilesCount);
+    return start + '-' + end;
+  }
 
   function fetchMediaScan(id) {
     api({
@@ -72,8 +79,8 @@ angular.module('lair').factory('showMediaScanDialog', function($uibModal) {
       url: '/media/scans/' + mediaScanId + '/files',
       params: {
         include: 'data',
-        start: (page - 1) * pageSize,
-        number: pageSize
+        start: (page - 1) * $scope.pageSize,
+        number: $scope.pageSize
       }
     }).then(function(res) {
       $scope.changes = res.data;
@@ -83,7 +90,7 @@ angular.module('lair').factory('showMediaScanDialog', function($uibModal) {
 
   function updateChangesPageLinks() {
 
-    var numberOfPages = Math.ceil($scope.mediaScan.changedFilesCount / pageSize);
+    var numberOfPages = Math.ceil($scope.mediaScan.changedFilesCount / $scope.pageSize);
     if (numberOfPages <= 1) {
       $scope.changesPageLinks = [];
       delete $scope.lastPage;

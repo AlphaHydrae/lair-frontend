@@ -1,0 +1,4 @@
+.label.label-default ng-if='scanStatusCtrl.scan.state == "canceled"' Canceled
+.label.label-danger ng-if='scanStatusCtrl.scan.state == "failed" || scanStatusCtrl.scan.state == "processingFailed"' Error
+.label.label-success ng-if='scanStatusCtrl.scan.state == "analyzed"' Complete
+uib-progressbar.progress-striped.active ng-if='scanStatusCtrl.scanIsInProgress(scanStatusCtrl.scan)' type='primary' value='scanStatusCtrl.scan.analysisProgress' animate='true'

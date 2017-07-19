@@ -19,7 +19,8 @@
           th Source
           th Started at
           th Duration
-          th Files
+          th Total Files
+          th Changes
           th Status
       tbody
         tr.loading ng-if='!mediaScansList.initialized'
@@ -34,19 +35,16 @@
           td {{ scan.createdAt | amDateFormat: 'lll' }}
           td {{ scanDuration(scan) | amDurationFormat }}
           td
-            // TODO analysis: show number of files created/changed/deleted
             span ng-if='scan.filesCount === undefined'
-              span.empty Not available yet
+              span.empty ng-if='scanIsScanning(scan)' Not available yet
+              span.empty ng-if='!scanIsScanning(scan)' Not available
             span ng-if='scan.filesCount'
-              span> {{ scan.filesCount | number }}
-              span ng-if='scan.changedFilesCount != scan.filesCount'
-                | ({{ scan.changedFilesCount | number }} changes)
+              span {{ scan.filesCount | number }}
+          td.fileCounts
+            scan-file-counts scan='scan'
           td.status
             a href='#' ng-click='showMediaScan(scan)'
-              .label.label-default ng-if='scan.state == "canceled"' Canceled
-              .label.label-danger ng-if='scan.state == "failed" || scan.state == "processingFailed"' Error
-              .label.label-success ng-if='scan.state == "processed"' Complete
-              uib-progressbar.progress-striped.active ng-if='scanIsInProgress(scan)' type='primary' value='scan.analysisProgress' animate='true'
+              scan-status scan='scan'
       tfoot
         tr
           td.text-center st-pagination=true st-items-by-page=15 st-template='/modules/tables/tables.pagination.html' colspan='{{ columns }}'

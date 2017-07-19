@@ -1,6 +1,8 @@
 #show-media-scan-dialog
 
   .modal-header
+    .status
+      scan-status.pull-right scan='mediaScan'
     h3
       span> Scanning result
       small ng-if='mediaScan' {{ mediaScan.createdAt | amDateFormat: 'lll' }}
@@ -16,6 +18,9 @@
       dd {{ mediaScan.source.name }}
       dt Duration
       dd {{ scanDuration(mediaScan) | amDurationFormat }}
+      dt Changes
+      dd
+        scan-file-counts scan='mediaScan'
 
     div ng-repeat='error in mediaScan.errors'
       p
@@ -39,6 +44,8 @@
       li ng-class='{"disabled": currentPage == lastPage}'
         a ng-click='showChangesPage(lastPage)'
           span.glyphicon.glyphicon-step-forward
+    .pagination-count.pull-left ng-if='changesPageLinks.length >= 2'
+      | Showing {{ getChangesRange() }} of {{ mediaScan.changedFilesCount }}
     .btn-group.pull-right
       button.btn.btn-warning type='button' ng-if='mediaScan.state == "failed" || mediaScan.state == "analysisFailed"' ng-click='retry()' Retry
       button.btn.btn-default type='button' ng-click='$dismiss()' Close

@@ -11,8 +11,14 @@ angular.module('lair').controller('MediaScansListCtrl', function(mediaScans, $sc
 
   $scope.scanDuration = mediaScans.getDuration;
   $scope.scanIsInProgress = mediaScans.isInProgress;
+  $scope.scanIsProcessed = mediaScans.isProcessed;
+  $scope.scanIsScanning = mediaScans.isScanning;
 
   $scope.showMediaScan = function(scan) {
+    if (mediaScans.isInProgress(scan)) {
+      return;
+    }
+
     showMediaScanDialog.open($scope, {
       mediaScanId: scan.id
     });

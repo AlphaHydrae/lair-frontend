@@ -1,0 +1,8 @@
+.label.label-success ng-if='scanFileCountsCtrl.scan.addedFilesCount' uib-tooltip='Files added' {{ scanFileCountsCtrl.scan.addedFilesCount | number }}
+.label.label-warning ng-if='scanFileCountsCtrl.scan.modifiedFilesCount' uib-tooltip='Files modified' {{ scanFileCountsCtrl.scan.modifiedFilesCount | number }}
+.label.label-danger ng-if='scanFileCountsCtrl.scan.deletedFilesCount' uib-tooltip='Files deleted' {{ scanFileCountsCtrl.scan.deletedFilesCount | number }}
+span ng-if='!scanFileCountsCtrl.scan.changedFilesCount'
+  span ng-if='scanFileCountsCtrl.scanIsProcessed()'
+    | No changes
+  span ng-if='!scanFileCountsCtrl.scanIsProcessed()'
+    span.empty Not available

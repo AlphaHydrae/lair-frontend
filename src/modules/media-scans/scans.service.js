@@ -1,8 +1,20 @@
 angular.module('lair').factory('mediaScans', function() {
 
+  var processedStates = [ 'processed', 'analyzed' ];
+  var progressStates = [ 'created', 'scanning', 'scanned', 'processing', 'processed' ];
+  var scanningStates = [ 'created', 'scanning' ];
+
   var service = {
     isInProgress: function(scan) {
-      return scan && (scan.state == 'created' || scan.state == 'scanning' || scan.state == 'scanned' || scan.state == 'processing');
+      return scan && _.includes(progressStates, scan.state);
+    },
+
+    isScanning: function(scan) {
+      return scan && _.includes(scanningStates, scan.state);
+    },
+
+    isProcessed: function(scan) {
+      return scan && _.includes(processedStates, scan.state);
     },
 
     getDuration: function(scan) {
@@ -11,8 +23,8 @@ angular.module('lair').factory('mediaScans', function() {
       }
 
       var endTime;
-      if (scan.state == 'processed') {
-        endTime = moment(scan.processedAt).valueOf();
+      if (scan.state == 'analyzed') {
+        endTime = moment(scan.analyzedAt).valueOf();
       } else if (scan.state == 'processingFailed') {
         endTime = moment(scan.processingFailedAt).valueOf();
       } else if (scan.state == 'canceled') {
