@@ -8,5 +8,14 @@ angular.module('lair').component('scanStatus', {
 }).controller('ScanStatusCtrl', function(mediaScans) {
 
   var scanStatusCtrl = this;
-  scanStatusCtrl.scanIsInProgress = mediaScans.isInProgress;
+  scanStatusCtrl.scanIsInProgress = _.partial(mediaScans.isInProgress, scanStatusCtrl.scan);
+  scanStatusCtrl.getAnalysisProgress = getAnalysisProgress;
+
+  function getAnalysisProgress() {
+    if (scanStatusCtrl.scan.analysisProgress === undefined) {
+      return 0;
+    }
+
+    return scanStatusCtrl.scan.analysisProgress * 100;
+  }
 });

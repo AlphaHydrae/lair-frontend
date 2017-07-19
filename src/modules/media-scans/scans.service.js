@@ -17,6 +17,10 @@ angular.module('lair').factory('mediaScans', function() {
       return scan && _.includes(processedStates, scan.state);
     },
 
+    isStopped: function(scan) {
+      return !service.isInProgress(scan);
+    },
+
     getDuration: function(scan) {
       if (!scan) {
         return;

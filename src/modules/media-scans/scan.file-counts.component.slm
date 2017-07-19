@@ -3,6 +3,6 @@
 .label.label-danger ng-if='scanFileCountsCtrl.scan.deletedFilesCount' uib-tooltip='Files deleted' {{ scanFileCountsCtrl.scan.deletedFilesCount | number }}
 span ng-if='!scanFileCountsCtrl.scan.changedFilesCount'
   span ng-if='scanFileCountsCtrl.scanIsProcessed()'
-    | No changes
+    .label.label-primary uib-tooltip='No changes' 0
   span ng-if='!scanFileCountsCtrl.scanIsProcessed()'
     span.empty Not available
