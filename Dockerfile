@@ -8,6 +8,7 @@ RUN mkdir -p /var/www/dist \
 USER build
 COPY config.js gulpfile.js /usr/src/app/
 COPY src /usr/src/app/src
+RUN npm install
 RUN gulp build
 
 USER root
