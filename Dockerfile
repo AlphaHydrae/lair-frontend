@@ -1,4 +1,4 @@
-FROM alphahydrae/lair-frontend-base:1.0.0
+FROM alphahydrae/lair-frontend-base:1.0.1
 
 ARG GOOGLE_CLIENT_ID
 
