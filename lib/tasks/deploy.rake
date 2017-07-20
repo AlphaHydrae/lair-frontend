@@ -107,10 +107,11 @@ namespace :deploy do
   end
 end
 
-def docker_build path:, name:, build_args: {}
+def docker_build path:, name:, build_args: {}, no_cache: false
 
   args = []
   args << '-t' << name.to_s
+  args << '--no-cache' if no_cache
 
   build_args.each do |key,value|
     args << '--build-arg' << "#{key}=#{value}"
