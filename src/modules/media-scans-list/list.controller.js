@@ -21,10 +21,6 @@ angular.module('lair').controller('MediaScansListCtrl', function(api, mediaScans
   });
 
   function showMediaScan(scan) {
-    if (mediaScans.isInProgress(scan)) {
-      return;
-    }
-
     showMediaScanDialog.open($scope, {
       mediaScanId: scan.id
     });
@@ -37,6 +33,7 @@ angular.module('lair').controller('MediaScansListCtrl', function(api, mediaScans
 
     polls.length = 0;
 
+    // TODO analysis: continue polling as long as there are updates
     polls = _.map(_.filter(scans, mediaScans.isInProgress), function(scan) {
 
       var poll = polling.poll(_.partial(pollScanStatus, scan), _.partial(mediaScans.isStopped, scan));

@@ -34,22 +34,33 @@ angular.module('lair').factory('showMediaScanDialog', function($uibModal) {
   $scope.scanDuration = mediaScans.getDuration;
 
   $scope.$watch('mediaScan.id', function(value) {
-    if (value && $scope.mediaScan.changedFilesCount >= 1) {
+    if (value && $scope.mediaScan.changedFilesCount >= 1 && mediaScans.isProcessed($scope.mediaScan)) {
       showChangesPage($scope.currentPage);
     }
   });
 
   $scope.showChangesPage = showChangesPage;
   $scope.getChangesRange = getChangesRange;
+  $scope.retry = retryProcessing;
+  $scope.reanalyze = reanalyze;
 
-  $scope.retry = function() {
+  function reanalyze() {
+    api({
+      method: 'POST',
+      url: '/media/scans/' + mediaScanId + '/analysis'
+    }).then(function() {
+      $uibModalInstance.dismiss();
+    });
+  }
+
+  function retryProcessing() {
     api({
       method: 'POST',
       url: '/media/scans/' + mediaScanId + '/retry'
     }).then(function() {
       $uibModalInstance.dismiss();
     });
-  };
+  }
 
   function getChangesRange() {
     var start = ($scope.currentPage - 1) * $scope.pageSize;

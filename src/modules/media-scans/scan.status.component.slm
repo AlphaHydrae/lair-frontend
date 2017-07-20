@@ -1,4 +1,7 @@
 .label.label-default ng-if='scanStatusCtrl.scan.state == "canceled"' Canceled
 .label.label-danger ng-if='scanStatusCtrl.scan.state == "failed" || scanStatusCtrl.scan.state == "processingFailed"' Error
 .label.label-success ng-if='scanStatusCtrl.scan.state == "analyzed"' Complete
-uib-progressbar.progress-striped.active ng-if='scanStatusCtrl.scanIsInProgress()' type='primary' value='scanStatusCtrl.getAnalysisProgress()' animate='true'
+// TODO analysis: make progress bar indeterminate when analysis progress <= 0
+uib-progressbar.progress-striped.active ng-if='scanStatusCtrl.scanIsInProgress() && scanStatusCtrl.getAnalysisProgress() <= 0' type='warning' value='100' animate='true'
+  | Starting analysis...
+uib-progressbar.progress-striped.active ng-if='scanStatusCtrl.scanIsInProgress() && scanStatusCtrl.getAnalysisProgress() >= 1' type='primary' value='scanStatusCtrl.getAnalysisProgress()' animate='true'

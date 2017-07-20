@@ -28,7 +28,7 @@
       pre.stack-trace ng-if='error.stackTrace' {{ error.stackTrace }}
 
   ul.list-group ng-if='changes.length'
-    li.list-group-item ng-repeat='change in changes' ng-class='{"list-group-item-success": change.changeType == "added", "list-group-item-warning": change.changeType == "changed", "list-group-item-danger": change.changeType == "deleted"}'
+    li.list-group-item ng-repeat='change in changes' ng-class='{"list-group-item-success": change.changeType == "added", "list-group-item-warning": change.changeType == "modified", "list-group-item-danger": change.changeType == "deleted"}'
       .clearfix
         | {{ change.path }}
         .pull-right
@@ -47,5 +47,6 @@
     .pagination-count.pull-left ng-if='changesPageLinks.length >= 2'
       | Showing {{ getChangesRange() }} of {{ mediaScan.changedFilesCount }}
     .btn-group.pull-right
-      button.btn.btn-warning type='button' ng-if='mediaScan.state == "failed" || mediaScan.state == "analysisFailed"' ng-click='retry()' Retry
+      button.btn.btn-warning type='button' ng-if='mediaScan.state == "analysisFailed"' ng-click='retry()' Retry
+      button.btn.btn-warning type='button' ng-if='mediaScan.state == "processed"' ng-click='reanalyze()' Reanalyze
       button.btn.btn-default type='button' ng-click='$dismiss()' Close
