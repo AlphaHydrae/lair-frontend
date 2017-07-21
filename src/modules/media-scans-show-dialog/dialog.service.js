@@ -106,7 +106,7 @@ angular.module('lair').factory('showMediaScanDialog', function($uibModal) {
       $scope.changesPageLinks = [];
       delete $scope.lastPage;
     } else if (numberOfPages <= 5) {
-      $scope.changesPageLinks = _.map(new Array(numberOfPages), function(i) {
+      $scope.changesPageLinks = _.map(new Array(numberOfPages), function(value, i) {
         return i + 1;
       });
       $scope.lastPage = numberOfPages;
