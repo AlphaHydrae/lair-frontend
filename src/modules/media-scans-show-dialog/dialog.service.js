@@ -39,6 +39,7 @@ angular.module('lair').factory('showMediaScanDialog', function($uibModal) {
     }
   });
 
+  $scope.isScanProcessed = mediaScans.isProcessed;
   $scope.showChangesPage = showChangesPage;
   $scope.getChangesRange = getChangesRange;
   $scope.retry = retryProcessing;

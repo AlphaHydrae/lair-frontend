@@ -8,7 +8,7 @@ angular.module('lair').controller('MediaScansListCtrl', function(api, mediaScans
   });
 
   var polls = [];
-  $scope.columns = $scope.currentUserIs('admin') ? 6 : 5;
+  $scope.columns = $scope.currentUserIs('admin') ? 7 : 6;
 
   $scope.scanDuration = mediaScans.getDuration;
   $scope.scanIsInProgress = mediaScans.isInProgress;
@@ -36,7 +36,14 @@ angular.module('lair').controller('MediaScansListCtrl', function(api, mediaScans
     // TODO analysis: continue polling as long as there are updates
     polls = _.map(_.filter(scans, mediaScans.isInProgress), function(scan) {
 
-      var poll = polling.poll(_.partial(pollScanStatus, scan), _.partial(mediaScans.isStopped, scan));
+      var previousAnalysisProgress;
+      var poll = polling.poll(_.partial(pollScanStatus, scan), _.partial(mediaScans.isStopped, scan), {
+        backoffCondition: function(scan) {
+          var backoff = scan.analysisProgress === previousAnalysisProgress;
+          previousAnalysisProgress = scan.analysisProgress;
+          return backoff;
+        }
+      });
 
       poll.catch(function(err) {
         $log.warn('Scan analysis timed out', err);

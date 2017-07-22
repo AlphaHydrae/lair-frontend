@@ -48,5 +48,5 @@
       | Showing {{ getChangesRange() }} of {{ mediaScan.changedFilesCount }}
     .btn-group.pull-right
       button.btn.btn-warning type='button' ng-if='mediaScan.state == "analysisFailed"' ng-click='retry()' Retry
-      button.btn.btn-warning type='button' ng-if='mediaScan.state == "processed"' ng-click='reanalyze()' Reanalyze
+      button.btn.btn-warning type='button' ng-if='isScanProcessed(mediaScan)' ng-click='reanalyze()' Reanalyze
       button.btn.btn-default type='button' ng-click='$dismiss()' Close

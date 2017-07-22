@@ -8,60 +8,77 @@ angular.module('lair').factory('polling', function($q, $log) {
 
   function poll(poller, predicate, options) {
     options = _.extend({
+      backoff: 1000,
+      backoffCondition: _.isEqual.bind(_),
       tries: 10,
-      wait: 1000
+      totalTries: 50,
+      wait: 2000
     }, options);
 
     var state = {
       enabled: true,
+      id: uuid.v4(),
+      totalTry: 0,
       try: 0,
       wait: options.wait
     };
 
-    var pollHandle = {};
-
-    pollHandle.promise = pollRecursive(poller, predicate, options, state);
-    pollHandle.then = function(onResolved, onRejected) {
-      return pollHandle.promise.then(onResolved, onRejected);
-    };
-    pollHandle.catch = function(onRejected) {
-      return pollHandle.promise.then(undefined, onRejected);
-    };
-
-    pollHandle.cancel = function() {
+    var promise = $q.when(pollRecursive(poller, predicate, options, state));
+    promise.cancel = function() {
       state.enabled = false;
     };
 
-    return pollHandle;
+    return promise;
   }
 
   function pollRecursive(poller, predicate, options, state) {
     if (!state.enabled) {
       $log.debug('Polling canceled after ' + (state.try + 1) + ' tries');
       return;
+    } else if (state.totalTry === 0) {
+      $log.debug('Poll ' + state.id + ' starting');
     }
 
-    return poller().then(function(result) {
+    return poller().then(function(pollResult) {
       return $q.when(predicate.apply(undefined, arguments)).then(function(successful) {
         if (successful) {
-          return result;
-        } else if (state.try >= options.tries - 1) {
-          return $q.reject(new Error('Polling failed after ' + options.tries + ' tries'));
+          return pollResult;
+        } else if (state.try >= options.tries - 1 || state.totalTry >= options.totalTries - 1) {
+          return $q.reject(new Error('Polling failed after ' + (state.totalTry + 1) + ' tries'));
         } else if (!state.enabled) {
           $log.debug('Polling canceled after ' + (state.try + 1) + ' tries');
           return;
         }
 
-        var deferred = $q.defer();
+        return $q.when(options.backoffCondition(pollResult, state.previous)).then(function(backoff) {
+          state.previous = pollResult;
 
-        setTimeout(function() {
-          deferred.resolve();
-        }, state.wait);
+          if (backoff) {
+            state.try++;
+            state.wait += options.backoff;
+            $log.debug('Poll ' + state.id + ' backing off by ' + options.backoff + ', waiting ' + state.wait + 'ms');
+          } else {
+            if (state.totalTry === 0) {
+              state.try++;
+            } else {
+              state.try = 0;
+            }
 
-        return deferred.promise.then(function() {
-          state.try++;
-          state.wait += options.wait;
-          return pollRecursive(poller, predicate, options, state);
+            state.wait = options.wait;
+            $log.debug('Poll ' + state.id + (state.totalTry === 0 ? '' : ' backoff reset,') + ' waiting ' + state.wait + 'ms');
+          }
+
+          state.totalTry++;
+
+          var deferred = $q.defer();
+
+          setTimeout(function() {
+            deferred.resolve();
+          }, state.wait);
+
+          return deferred.promise.then(function() {
+            return pollRecursive(poller, predicate, options, state);
+          });
         });
       });
     })
