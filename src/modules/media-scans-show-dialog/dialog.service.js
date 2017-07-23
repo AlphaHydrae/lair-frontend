@@ -88,7 +88,7 @@ angular.module('lair').factory('showMediaScanDialog', function($uibModal) {
     $scope.currentPage = page;
 
     api({
-      url: '/media/scans/' + mediaScanId + '/files',
+      url: '/media/scans/' + mediaScanId + '/changes',
       params: {
         include: 'data',
         start: (page - 1) * $scope.pageSize,
