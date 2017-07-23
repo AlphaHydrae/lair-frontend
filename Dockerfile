@@ -1,5 +1,4 @@
-# TODO: fix base image tag (no v)
-FROM alphahydrae/lair-frontend-base:v1.0.1
+FROM alphahydrae/lair-frontend-base:1.1.0
 
 ARG GOOGLE_CLIENT_ID
 
