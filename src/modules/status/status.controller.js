@@ -1,6 +1,11 @@
-angular.module('lair').controller('StatusCtrl', function(api, $uibModal, $q, $scope, $timeout) {
+angular.module('lair').controller('StatusCtrl', function(api, $uibModal, $q, $scope, $timeout, version) {
+
+  $scope.versions = {
+    frontend: version
+  };
 
   updateImageStats();
+  loadBackendVersions();
 
   $scope.showUploadError = function(image) {
     $scope.selectedImage = image;
@@ -62,6 +67,15 @@ angular.module('lair').controller('StatusCtrl', function(api, $uibModal, $q, $sc
       }
     });
   };
+
+  function loadBackendVersions() {
+    return api({
+      url: '/'
+    }).then(function(res) {
+      $scope.versions.api = res.data.apiVersion;
+      $scope.versions.backend = res.data.version;
+    });
+  }
 
   function updateImageStats() {
     api({
