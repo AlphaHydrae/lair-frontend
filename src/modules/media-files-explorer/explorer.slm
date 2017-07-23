@@ -35,6 +35,15 @@
           span ng-if='scanPath.path == mediaFilesList.httpSettings.params.directory'
             | {{ scanPath.path }}
 
+      .source-actions.btn-group ng-if='currentUserIs("mediaManager") && mediaFilesList.mediaSource'
+        button.btn.btn-warning type='button' ng-if='mediaFilesList.mediaSource' ng-click='cleanupSource(mediaFilesList.mediaSource)'
+          span.glyphicon.glyphicon-wrench
+          |  Clean up
+
+      .source-actions-feedback
+        .text-success ng-if='cleanupTriggered'
+          strong Cleanup triggered
+
     .col-md-8.col-xs-12
       ol.breadcrumb ng-if='mediaFilesList.httpSettings.params.sourceId'
         li ng-class='{active: !breadcrumbs.length}'
