@@ -6,10 +6,16 @@ RUN mkdir -p /var/www/dist \
     && chown build:build /var/www/dist
 
 USER build
+
+# Update dependencies
+COPY package.json package-lock.json /usr/src/app/
+RUN npm install
+
+# Update application
 COPY config.js gulpfile.js /usr/src/app/
 COPY src /usr/src/app/src
-# TODO: add package.json
-RUN npm install
+
+# Build
 RUN gulp build
 
 USER root
