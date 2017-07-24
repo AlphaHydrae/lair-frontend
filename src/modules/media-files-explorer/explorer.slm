@@ -36,13 +36,16 @@
             | {{ scanPath.path }}
 
       .source-actions.btn-group ng-if='currentUserIs("mediaManager") && mediaFilesList.mediaSource'
+        button.btn.btn-warning type='button' ng-if='mediaFilesList.mediaSource' ng-click='reanalyzeSource(mediaFilesList.mediaSource)'
+          span.glyphicon.glyphicon-signal
+          |  Reanalyze
         button.btn.btn-warning type='button' ng-if='mediaFilesList.mediaSource' ng-click='cleanupSource(mediaFilesList.mediaSource)'
           span.glyphicon.glyphicon-wrench
           |  Clean up
 
       .source-actions-feedback
-        .text-success ng-if='cleanupTriggered'
-          strong Cleanup triggered
+        .text-success ng-if='operationTriggered'
+          strong {{ operationTriggered }}
 
     .col-md-8.col-xs-12
       ol.breadcrumb ng-if='mediaFilesList.httpSettings.params.sourceId'

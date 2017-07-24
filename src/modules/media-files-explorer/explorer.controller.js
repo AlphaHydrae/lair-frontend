@@ -24,7 +24,7 @@ angular.module('lair').controller('FileExplorerCtrl', function(api, auth, $locat
       var directory;
       if (oldValue && value != oldValue) {
         directory = '/';
-        delete $scope.cleanupTriggered;
+        delete $scope.operationTriggered;
       } else {
         directory = $stateParams.directory || '/';
       }
@@ -204,13 +204,24 @@ angular.module('lair').controller('FileExplorerCtrl', function(api, auth, $locat
   }, true);
 
   $scope.cleanupSource = function(source) {
-    delete $scope.cleanupTriggered;
+    delete $scope.operationTriggered;
 
     return api({
       method: 'POST',
       url: '/media/sources/' + source.id + '/cleanup'
     }).then(function() {
-      $scope.cleanupTriggered = true;
+      $scope.operationTriggered = 'Cleanup triggered';
+    });
+  };
+
+  $scope.reanalyzeSource = function(source) {
+    delete $scope.operationTriggered;
+
+    return api({
+      method: 'POST',
+      url: '/media/sources/' + source.id + '/analysis'
+    }).then(function() {
+      $scope.operationTriggered = 'Analysis triggered';
     });
   };
 
