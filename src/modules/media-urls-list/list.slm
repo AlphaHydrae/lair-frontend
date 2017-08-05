@@ -57,6 +57,7 @@
       thead
         tr
           th.provider Provider
+          th.scraper Scraper
           th.url Media
           th.work Work
           th.status Status
@@ -70,6 +71,9 @@
         tr ng-repeat='url in mediaUrlsList.records'
           td
             scraper-label scraper='{{ url.provider }}'
+          td
+            code ng-if='url.scrap' {{ url.scrap.scraper }}
+            em.empty ng-if='!url.scrap' N/A
           td
             a href='{{ url.url }}' target='_blank' {{ url.url }}
           td
