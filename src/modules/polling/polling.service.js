@@ -11,7 +11,7 @@ angular.module('lair').factory('polling', function($q, $log) {
       backoff: 1000,
       backoffCondition: _.isEqual.bind(_),
       tries: 10,
-      totalTries: 50,
+      totalTries: 1000,
       wait: 2000
     }, options);
 
@@ -26,6 +26,14 @@ angular.module('lair').factory('polling', function($q, $log) {
     var promise = $q.when(pollRecursive(poller, predicate, options, state));
     promise.cancel = function() {
       state.enabled = false;
+
+      if (state.timeout && state.timeoutDeferred) {
+        clearTimeout(state.timeout);
+
+        var message = 'Polling canceled after ' + (state.try + 1) + ' tries';
+        state.timeoutDeferred.reject(new Error(message));
+        $log.debug(message);
+      }
     };
 
     return promise;
@@ -40,7 +48,7 @@ angular.module('lair').factory('polling', function($q, $log) {
     }
 
     return poller().then(function(pollResult) {
-      return $q.when(predicate.apply(undefined, arguments)).then(function(successful) {
+      return $q.when(predicate.call(undefined, pollResult, state.previous)).then(function(successful) {
         if (successful) {
           return pollResult;
         } else if (state.try >= options.tries - 1 || state.totalTry >= options.totalTries - 1) {
@@ -70,13 +78,12 @@ angular.module('lair').factory('polling', function($q, $log) {
 
           state.totalTry++;
 
-          var deferred = $q.defer();
-
-          setTimeout(function() {
-            deferred.resolve();
+          state.timeoutDeferred = $q.defer();
+          state.timeout = setTimeout(function() {
+            state.timeoutDeferred.resolve();
           }, state.wait);
 
-          return deferred.promise.then(function() {
+          return state.timeoutDeferred.promise.then(function() {
             return pollRecursive(poller, predicate, options, state);
           });
         });

@@ -35,8 +35,13 @@
           span ng-if='scanPath.path == mediaFilesList.httpSettings.params.directory'
             | {{ scanPath.path }}
 
+      .progress ng-if='getAnalysisProgress() !== undefined'
+        .progress-bar.progress-bar-striped.active role='progressbar' style='width: {{ getAnalysisProgress() || 100 }}%'
+          span ng-if='getAnalysisProgress() === 0' Analyzing...
+          span ng-if='getAnalysisProgress() > 20' {{ getAnalysisProgress() }}%
+
       .source-actions.btn-group ng-if='currentUserIs("mediaManager") && mediaFilesList.mediaSource'
-        button.btn.btn-warning type='button' ng-if='mediaFilesList.mediaSource' ng-click='reanalyzeSource(mediaFilesList.mediaSource)'
+        button.btn.btn-warning type='button' ng-if='mediaFilesList.mediaSource' ng-click='reanalyzeSource(mediaFilesList.mediaSource)' ng-disabled='!currentDirectory'
           span.glyphicon.glyphicon-signal
           |  Reanalyze
         button.btn.btn-warning type='button' ng-if='mediaFilesList.mediaSource' ng-click='cleanupSource(mediaFilesList.mediaSource)'
@@ -57,20 +62,17 @@
           span ng-if='$index == breadcrumbs.length - 1' {{ directory | basename }}
 
       .alert ng-if='directoryMessage && directoryMessageType' ng-class='{"alert-danger": directoryMessageType == "error", "alert-warning": directoryMessageType == "warning", "alert-info": directoryMessageType == "info"}'
-        span ng-if='directoryMessage == "nfoDuplicate"'
+        span ng-if='directoryMessage == "analyzing"'
+          strong> Processing:
+          | Some of the files in this directory are still being analyzed.
+        span ng-if='directoryMessage == "duplicateNfo"'
           strong> Duplicate NFOs:
-          span ng-if='duplicateNfoCount >= 2'
-            | This directory contains {{ duplicateNfoCount }} NFO files.
-            |  Directories with media files must contain one and exactly one NFO file.
-            |  This NFO file should contain a URL that identifies the media and is
-            a<> href='#' ng-click='showSupportedScrapers()' supported by one of our scrapers
-            | .
-          span ng-if='duplicateNfoCount == 1'
-            | Another NFO file is present in a parent directory or sub-directory.
-            |  Only one NFO file must be present in a directory tree.
-            |  This NFO file should contain a URL that identifies the media and is
-            a<> href='#' ng-click='showSupportedScrapers()' supported by one of our scrapers
-        span ng-if='directoryMessage == "nfoInvalid"'
+          | This directory contains {{ duplicateNfoCount }} NFO files.
+          |  Directories with media files must contain at most one NFO file.
+          |  This NFO file should contain a URL that identifies the media and is
+          a<> href='#' ng-click='showSupportedScrapers()' supported by one of our scrapers
+          | .
+        span ng-if='directoryMessage == "invalidNfo"'
           strong> Invalid NFO:
           span ng-if='nfoFile && nfoFile.properties.url'
             | The NFO file in this directory contains a URL that is not
@@ -84,7 +86,7 @@
             a<> href='#' ng-click='showSupportedScrapers()' supported by one of our scrapers
             | .
           span ng-if='!nfoFile' The NFO file in this directory does not contain a valid or recognized URL.
-        span ng-if='directoryMessage == "unlinkedFiles"'
+        span ng-if='directoryMessage == "unlinked"'
           strong> Unidentified files:
           | Some of the files in this directory cannot be identified.
           |  There appears to be no valid NFO file in this directory or parent directories.
@@ -92,26 +94,25 @@
           |  This file should contain a URL that identifies the media and is
           a<> href='#' ng-click='showSupportedScrapers()' supported by one of our scrapers
           | .
-        span ng-if='directoryMessage == "unlinkedWarnings"'
+        span ng-if='directoryMessage == "unlinkedFiles"'
           strong> Warning:
           | Some of your media files cannot be identified.
           |  Open directories shown in yellow to find these files.
-        span ng-if='directoryMessage == "filesProcessing"'
-          strong> Processing:
-          | Some of the files in this directory are still being analyzed.
 
-      infinite records='mediaFilesList.records' http-settings='mediaFilesList.httpSettings' infinite-options='mediaFilesList.infiniteOptions' on-fetched='enrichMediaFiles(res)' on-records-updated='enrichDirectory(records)'
+      infinite records='mediaFilesList.records' http-settings='mediaFilesList.httpSettings' infinite-options='mediaFilesList.infiniteOptions' on-records-updated='onFilesUpdated(records)'
         ul.list-group
-          li.list-group-item ng-repeat='file in mediaFilesList.records' ng-class='{"list-group-item-danger": file.error, "list-group-item-warning": file.warning, "list-group-item-info": file.processing}'
+          li.list-group-item ng-repeat='file in mediaFilesList.records' ng-class='{"list-group-item-danger": fileHasError(file), "list-group-item-warning": fileHasWarning(file), "list-group-item-info": fileIsPending(file)}'
             span.badge ng-if='file.type == "file"' {{ file.size | prettyBytes }}
             a href='#' ng-if='file.type == "directory"' ng-click='openDirectory(file.path)'
               span.glyphicon.glyphicon-folder-open ng-if='file.type == "directory"'
               s ng-if='file.deleted' {{ file.path | basename }}
               span ng-if='!file.deleted' {{ file.path | basename }}
-            span.label.label-danger.pull-right ng-if='file.error == "fileDeleted"' Deleted
-            span.label.label-danger.pull-right ng-if='file.error == "nfoInvalid"' Invalid
-            span.label.label-danger.pull-right ng-if='file.error == "nfoDuplicate"' Duplicate
-            span.label.label-warning.pull-right ng-if='file.warning == "fileIsUnlinked"' Unidentified
+            span.pull-right ng-switch='getFileStatus(file)'
+              span.label.label-info ng-switch-when='analyzing' Analyzing
+              span.label.label-danger ng-switch-when='deleted' Deleted
+              span.label.label-danger ng-switch-when='invalidNfo' Invalid
+              span.label.label-danger ng-switch-when='duplicateNfo' Duplicate
+              span.label.label-warning ng-switch-when='unlinked' Unidentified
             a href='#' ng-if='file.type == "file"' ng-click='openFile(file)'
               span.glyphicon.glyphicon-file
               s ng-if='file.deleted' {{ file.path | basename }}

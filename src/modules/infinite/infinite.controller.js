@@ -78,6 +78,8 @@ angular.module('lair').controller('InfiniteCtrl', function(api, auth, $scope) {
       _.each(res.data, function(record) {
         $scope.records.push(record);
       });
+
+      $scope.onRecordsUpdated({ records: $scope.records });
     }
 
     if (!res.pagination().hasMorePages()) {

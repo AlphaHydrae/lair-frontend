@@ -1,7 +1,19 @@
-angular.module('lair').controller('FileExplorerCtrl', function(api, auth, $location, $scope, scrapers, showMediaFileDialog, $stateParams) {
+angular.module('lair').controller('FileExplorerCtrl', function(api, auth, $location, $log, polling, $q, $scope, scrapers, showMediaFileDialog, $stateParams) {
+  // TODO: investigate infinite loop bug when changing directory while analyzing
 
   var fileModal;
   var fileShown = $stateParams.file;
+  var directoryAnalysisPoll;
+  var refreshMoreUnanalyzedFiles;
+  var refreshUnanalyzedFilesPromise;
+  var refreshFilesBatchSize = 60;
+
+  $scope.$on('$destroy', function() {
+    if (directoryAnalysisPoll) {
+      directoryAnalysisPoll.cancel();
+      directoryAnalysisPoll = undefined;
+    }
+  });
 
   $scope.mediaFilesList = {
     records: [],
@@ -41,7 +53,20 @@ angular.module('lair').controller('FileExplorerCtrl', function(api, auth, $locat
 
       $scope.mediaFilesList.infiniteOptions.enabled = true;
 
-      fetchFilesCount();
+      fetchFilesCount(value);
+    }
+  });
+
+  $scope.$watchGroup([ 'mediaFilesList.mediaSource', 'mediaFilesList.httpSettings.params.directory' ], function(values, oldValues) {
+    if (values[0] && values[1] && (!oldValues[0] || !oldValues[1] || values[0].id != oldValues[0].id || values[1] != oldValues[1])) {
+      refreshMoreUnanalyzedFiles = false;
+      updateCurrentDirectory(values[0], values[1]);
+    }
+  });
+
+  $scope.$watch('currentDirectory', function(value, oldValue) {
+    if (value && (!oldValue || value.id != oldValue.id)) {
+      pollDirectoryAnalysisProgress(value);
     }
   });
 
@@ -153,55 +178,9 @@ angular.module('lair').controller('FileExplorerCtrl', function(api, auth, $locat
     scrapers.openSupportModal();
   };
 
-  $scope.enrichMediaFiles = function(res) {
-    _.each(res.data, function(file) {
-      if (file.deleted) {
-        file.error = 'fileDeleted';
-      } else if (nfoIs(file, 'duplicate')) {
-        file.error = 'nfoDuplicate';
-      } else if (nfoIs(file, 'invalid')) {
-        file.error = 'nfoInvalid';
-      } else if (directoryHasUnlikedFiles(file)) {
-        file.warning = 'directoryHasUnlikedFiles';
-      } else if (fileIsUnlinked(file)) {
-        file.warning = 'fileUnlinked';
-      } else if (fileIsBeingProcessed(file)) {
-        file.processing = true;
-      }
-    });
+  $scope.onFilesUpdated = function(files) {
+    updateDirectoryMessage();
   };
-
-  $scope.$watch('mediaFilesList.records', function(records) {
-    if (records) {
-
-      delete $scope.directoryMessage;
-      delete $scope.directoryMessageType;
-      delete $scope.nfoFile;
-      delete $scope.duplicateNfoCount;
-
-      var nfoFile = _.find(records, { type: 'file', deleted: false, extension: 'nfo' }),
-          duplicateNfoCount = _.filter(records, { error: 'nfoDuplicate' }).length;
-
-      if (duplicateNfoCount) {
-        $scope.directoryMessageType = 'error';
-        $scope.directoryMessage = 'nfoDuplicate';
-        $scope.duplicateNfoCount = duplicateNfoCount;
-      } else if (nfoFile && nfoFile.error == 'nfoInvalid') {
-        $scope.directoryMessageType = 'error';
-        $scope.directoryMessage = 'nfoInvalid';
-        $scope.nfoFile = nfoFile;
-      } else if (_.find(records, { warning: 'fileUnlinked' })) {
-        $scope.directoryMessageType = 'warning';
-        $scope.directoryMessage = 'unlinkedFiles';
-      } else if (_.find(records, { warning: 'directoryHasUnlikedFiles' })) {
-        $scope.directoryMessageType = 'warning';
-        $scope.directoryMessage = 'unlinkedWarnings';
-      } else if (_.find(records, { processing: true })) {
-        $scope.directoryMessageType = 'info';
-        $scope.directoryMessage = 'filesProcessing';
-      }
-    }
-  }, true);
 
   $scope.cleanupSource = function(source) {
     delete $scope.operationTriggered;
@@ -222,11 +201,63 @@ angular.module('lair').controller('FileExplorerCtrl', function(api, auth, $locat
       url: '/media/sources/' + source.id + '/analysis'
     }).then(function() {
       $scope.operationTriggered = 'Analysis triggered';
+
+      var filesPromise = refreshFiles($scope.mediaFilesList.records.slice());
+      var directoryPromise = refreshCurrentDirectory().then(function(directory) {
+        $scope.currentDirectoryUnanalyzedFilesCount = directory.unanalyzedFilesCount;
+        pollDirectoryAnalysisProgress(directory);
+      });
+
+      return $q.all([
+        filesPromise,
+        directoryPromise
+      ]);
     });
   };
 
   if (fileShown) {
     $scope.openFile(fileShown);
+  }
+
+  $scope.getFileStatus = function(file) {
+    if (fileIsBeingAnalyzed(file)) {
+      return 'analyzing';
+    } else if (file.deleted) {
+      return 'deleted';
+    } else if (nfoIs(file, 'duplicate')) {
+      return 'duplicateNfo';
+    } else if (nfoIs(file, 'invalid')) {
+      return 'invalidNfo';
+    } else if (directoryHasUnlikedFiles(file)) {
+      return 'unlinkedFiles';
+    } else if (fileIsUnlinked(file)) {
+      return 'unlinked';
+    }
+  };
+
+  $scope.fileIsPending = function(file) {
+    return _.includes([ 'analyzing' ], $scope.getFileStatus(file));
+  };
+
+  $scope.fileHasError = function(file) {
+    return _.includes([ 'deleted', 'duplicateNfo', 'invalidNfo' ], $scope.getFileStatus(file));
+  };
+
+  $scope.fileHasWarning = function(file) {
+    return _.includes([ 'unlinkedFiles', 'unlinked' ], $scope.getFileStatus(file));
+  };
+
+  $scope.getAnalysisProgress = function() {
+    if (!$scope.currentDirectory || !$scope.currentDirectory.unanalyzedFilesCount) {
+      return;
+    }
+
+    var progress = $scope.currentDirectoryUnanalyzedFilesCount - $scope.currentDirectory.unanalyzedFilesCount;
+    return Math.round(progress * 100 / $scope.currentDirectoryUnanalyzedFilesCount);
+  };
+
+  function fileIsBeingAnalyzed(file) {
+    return !file.deleted && ((file.type == 'file' && !file.analyzed) || (file.type == 'directory' && file.unanalyzedFilesCount));
   }
 
   function nfoIs(file, error) {
@@ -241,8 +272,133 @@ angular.module('lair').controller('FileExplorerCtrl', function(api, auth, $locat
     return !file.deleted && file.type == 'file' && file.extension != 'nfo' && !file.mediaUrlId;
   }
 
-  function fileIsBeingProcessed(file) {
-    return !file.deleted && file.type == 'file' && !file.analyzed;
+  function updateCurrentDirectory(source, path) {
+    api({
+      url: '/media/files',
+      params: {
+        sourceId: source.id,
+        path: path
+      }
+    }).then(function(res) {
+      if (!res.data.length) {
+        return;
+      }
+
+      $scope.currentDirectory = res.data[0];
+      $scope.currentDirectoryUnanalyzedFilesCount = res.data[0].unanalyzedFilesCount;
+    });
+  }
+
+  function pollDirectoryAnalysisProgress(directory) {
+    if (directoryAnalysisPoll) {
+      directoryAnalysisPoll.cancel();
+      directoryAnalysisPoll = undefined;
+    }
+
+    if (directory.deleted || !directory.unanalyzedFilesCount) {
+      return;
+    }
+
+    $log.debug('Polling analysis progress of directory', directory.path);
+    directoryAnalysisPoll = polling.poll(refreshCurrentDirectory, directoryIsAnalyzed);
+  }
+
+  function directoryIsAnalyzed(directory, previous) {
+    if (!directory.unanalyzedFilesCount) {
+      $log.debug('Refreshing all remaining unanalyzed files');
+      refreshFiles(_.shuffle(getUnanalyzedFiles())).then(updateDirectoryMessage);
+    } else if (!previous || directory.unanalyzedFilesCount !== previous.unanalyzedFilesCount) {
+      refreshUnanalyzedFiles();
+    }
+
+    return !directory.unanalyzedFilesCount;
+  }
+
+  function refreshUnanalyzedFiles() {
+
+    var unanalyzed = _.some($scope.mediaFilesList.records, fileIsBeingAnalyzed);
+    if (!unanalyzed) {
+      return $q.when();
+    } else if (refreshUnanalyzedFilesPromise) {
+      refreshMoreUnanalyzedFiles = true;
+      return refreshUnanalyzedFilesPromise;
+    }
+
+    $log.debug('Refreshing unanalyzed files');
+    refreshUnanalyzedFilesPromise = refreshUnanalyzedFilesRecursive();
+    return refreshUnanalyzedFilesPromise;
+  }
+
+  function refreshUnanalyzedFilesRecursive() {
+    var batch = _.shuffle(getUnanalyzedFiles()).slice(0, refreshFilesBatchSize);
+    return refreshFilesBatch(batch).then(function() {
+      if (refreshMoreUnanalyzedFiles) {
+        refreshMoreUnanalyzedFiles = false;
+        $log.debug('Refreshing more unanalyzed files');
+        return refreshUnanalyzedFilesRecursive();
+      }
+
+      $log.debug('Done refreshing unanalyzed files');
+      refreshUnanalyzedFilesPromise = undefined;
+    });
+  }
+
+  function refreshFiles(files) {
+    return $q.when(refreshUnanalyzedFilesPromise).then(function() {
+
+      var promise = $q.when();
+
+      if (files.length) {
+        var n = Math.ceil(files.length / refreshFilesBatchSize);
+        for (var i = 0; i < n; i++) {
+          promise = promise.then((function(i) {
+            return refreshFilesBatch(files.slice(i * refreshFilesBatchSize, i * refreshFilesBatchSize + refreshFilesBatchSize));
+          })(i));
+        }
+      }
+
+      return promise;
+    });
+  }
+
+  function refreshFilesBatch(files) {
+    $log.debug('Refreshing', files.length, 'files');
+
+    return api({
+      url: '/media/files',
+      params: {
+        id: _.map(files, 'id')
+      }
+    }).then(function(res) {
+      _.each(res.data, function(file) {
+        var index = _.findIndex($scope.mediaFilesList.records, { id: file.id });
+        if (index >= 0) {
+          $scope.mediaFilesList.records[index] = file;
+        }
+      });
+
+      return res.data;
+    });
+  }
+
+  function getUnanalyzedFiles(files) {
+    return _.filter($scope.mediaFilesList.records, fileIsBeingAnalyzed);
+  }
+
+  function refreshCurrentDirectory() {
+    if (!$scope.currentDirectory) {
+      throw new Error('Current directory is not set');
+    }
+
+    return api({
+      url: '/media/files',
+      params: {
+        id: $scope.currentDirectory.id
+      }
+    }).then(function(res) {
+      $scope.currentDirectory = res.data[0];
+      return $scope.currentDirectory;
+    });
   }
 
   function resetBreadcrumbs() {
@@ -270,15 +426,47 @@ angular.module('lair').controller('FileExplorerCtrl', function(api, auth, $locat
     };
   }
 
-  function fetchFilesCount() {
+  function fetchFilesCount(source) {
     api({
       url: '/media/files',
       params: {
-        type: 'file',
-        number: 0
+        sourceId: source.id,
+        path: '/'
       }
     }).then(function(res) {
-      $scope.sourceFilesCount = res.pagination().filteredTotal;
+      $scope.sourceFilesCount = res.data.length ? res.data[0].filesCount : 0;
     });
+  }
+
+  function updateDirectoryMessage() {
+    delete $scope.directoryMessage;
+    delete $scope.directoryMessageType;
+    delete $scope.nfoFile;
+    delete $scope.duplicateNfoCount;
+
+    var files = $scope.mediaFilesList.records;
+    var nfoFile = _.find(files, { type: 'file', deleted: false, extension: 'nfo' }),
+        duplicateNfoCount = _.filter(files, { nfoError: 'duplicate' }).length;
+
+    var statuses = _.compact(_.uniq(_.map(files, $scope.getFileStatus)));
+
+    if (_.includes(statuses, 'analyzing')) {
+      $scope.directoryMessageType = 'info';
+      $scope.directoryMessage = 'analyzing';
+    } else if (_.includes(statuses, 'duplicateNfo')) {
+      $scope.directoryMessageType = 'error';
+      $scope.directoryMessage = 'duplicateNfo';
+      $scope.duplicateNfoCount = duplicateNfoCount;
+    } else if (_.includes(statuses, 'invalidNfo')) {
+      $scope.directoryMessageType = 'error';
+      $scope.directoryMessage = 'invalidNfo';
+      $scope.nfoFile = nfoFile;
+    } else if (_.includes(statuses, 'unlinked')) {
+      $scope.directoryMessageType = 'warning';
+      $scope.directoryMessage = 'unlinked';
+    } else if (_.includes(statuses, 'unlinkedFiles')) {
+      $scope.directoryMessageType = 'warning';
+      $scope.directoryMessage = 'unlinkedFiles';
+    }
   }
 });
