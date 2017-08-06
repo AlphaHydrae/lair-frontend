@@ -79,29 +79,29 @@
             span ng-if='url.work'
               | {{ url.work.titles[0].text }}
           td
-            code ng-if='url.scrap' {{ url.scrap.scraper }}
-            em.empty ng-if='!url.scrap' N/A
+            code ng-if='url.lastScrap' {{ url.lastScrap.scraper }}
+            em.empty ng-if='!url.lastScrap' N/A
           td.status
             a href='#' ng-click='showSupportedScrapers()'
-              .label.label-default ng-if='!url.scrap' Scraping not yet supported
+              .label.label-default ng-if='!url.lastScrap' Scraping not yet supported
 
-            .label.label-primary ng-if='url.scrap.state == "created"' Queued
+            .label.label-primary ng-if='url.lastScrap.state == "created"' Queued
 
-            .label.label-primary ng-if='url.scrap.state == "scraping" || url.scrap.state == "scraped"' Scraping
+            .label.label-primary ng-if='url.lastScrap.state == "scraping" || url.lastScrap.state == "scraped"' Scraping
 
-            .label.label-danger ng-if='url.scrap.state == "scrapingFailed" && !currentUserIs("admin")' uib-tooltip='URL could not be scraped' Scraping error
-            a href='#' ng-if='url.scrap.state == "scrapingFailed" && currentUserIs("admin")' ng-click='showScrapingError(url.scrap)' uib-tooltip='URL could not be scraped'
+            .label.label-danger ng-if='url.lastScrap.state == "scrapingFailed" && !currentUserIs("admin")' uib-tooltip='URL could not be scraped' Scraping error
+            a href='#' ng-if='url.lastScrap.state == "scrapingFailed" && currentUserIs("admin")' ng-click='showScrapingError(url.lastScrap)' uib-tooltip='URL could not be scraped'
               .label.label-danger Scraping error
 
-            .label.label-danger ng-if='url.scrap.state == "expansionFailed" && !currentUserIs("admin")' uib-tooltip='Scraped data could not be parsed' Scraping error
-            a href='#' ng-if='url.scrap.state == "expansionFailed" && currentUserIs("admin")' ng-click='showScrapingError(url.scrap)' uib-tooltip='Scraped data could not be parsed'
+            .label.label-danger ng-if='url.lastScrap.state == "expansionFailed" && !currentUserIs("admin")' uib-tooltip='Scraped data could not be parsed' Scraping error
+            a href='#' ng-if='url.lastScrap.state == "expansionFailed" && currentUserIs("admin")' ng-click='showScrapingError(url.lastScrap)' uib-tooltip='Scraped data could not be parsed'
               .label.label-danger Expansion error
 
-            .label.label-success ng-if='url.scrap.state == "expanded" && !currentUserIs("admin")' Scraped
-            a href='#' ng-if='url.scrap.state == "expanded" && currentUserIs("admin")' ng-click='showScrapingError(url.scrap)' uib-tooltip='Show scraped data'
+            .label.label-success ng-if='url.lastScrap.state == "expanded" && !currentUserIs("admin")' Scraped
+            a href='#' ng-if='url.lastScrap.state == "expanded" && currentUserIs("admin")' ng-click='showScrapingError(url.lastScrap)' uib-tooltip='Show scraped data'
               .label.label-success Scraped
 
-            a href='#' ng-if='url.scrap.warningsCount >= 1 && currentUserIs("admin")' ng-click='showScrapingError(url.scrap)' uib-tooltip='Warnings: {{ url.scrap.warningsCount }}'
+            a href='#' ng-if='url.lastScrap.warningsCount >= 1 && currentUserIs("admin")' ng-click='showScrapingError(url.lastScrap)' uib-tooltip='Warnings: {{ url.lastScrap.warningsCount }}'
               span.warnings.text-warning.glyphicon.glyphicon-warning-sign
       tfoot
         tr

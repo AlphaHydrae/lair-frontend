@@ -6,7 +6,7 @@ angular.module('lair').controller('MediaUrlsListCtrl', function(api, $location, 
   tables.create($scope, 'mediaUrlsList', {
     url: '/media/urls',
     params: {
-      include: [ 'scrap', 'work' ]
+      include: [ 'lastScrap', 'work' ]
     }
   });
 
