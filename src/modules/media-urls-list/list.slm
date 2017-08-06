@@ -57,23 +57,20 @@
       thead
         tr
           th.provider Provider
-          th.scraper Scraper
           th.url Media
           th.work Work
+          th.scraper Scraper
           th.status Status
       tbody
         tr.loading ng-if='!mediaUrlsList.initialized'
-          td colspan=4 Loading...
+          td colspan=5 Loading...
         tr.empty ng-if='mediaUrlsList.initialized && !mediaUrlsList.records.length'
-          td colspan=4
+          td colspan=5
             span ng-if='mediaUrlsList.pagination.filtered' No matching media found.
             span ng-if='!mediaUrlsList.pagination.filtered' No media scraped.
         tr ng-repeat='url in mediaUrlsList.records'
           td
             scraper-label scraper='{{ url.provider }}'
-          td
-            code ng-if='url.scrap' {{ url.scrap.scraper }}
-            em.empty ng-if='!url.scrap' N/A
           td
             a href='{{ url.url }}' target='_blank' {{ url.url }}
           td
@@ -81,6 +78,9 @@
               | -
             span ng-if='url.work'
               | {{ url.work.titles[0].text }}
+          td
+            code ng-if='url.scrap' {{ url.scrap.scraper }}
+            em.empty ng-if='!url.scrap' N/A
           td.status
             a href='#' ng-click='showSupportedScrapers()'
               .label.label-default ng-if='!url.scrap' Scraping not yet supported
